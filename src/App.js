@@ -1,22 +1,38 @@
-import logo from './logo.svg';
+import React , {useRef,useEffect} from 'react';
 import './App.css';
+import * as tf from '@tensorflow/tfjs';
+import Webcam from 'react-webcam';
 
 function App() {
+  const webcamRef = useRef(null)
+  const wid = 640
+  const hig = 480
+
+  const tfjsModelJsonURL = 'public/assets/models/tfjs/model.json' 
+
+  const LoadModel = async () => {
+    const Model = await tf.loadGraphModel(tfjsModelJsonURL)
+    console.log(Model)
+  }
+
+  useEffect(()=>{
+    LoadModel();
+  },[])
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <Webcam
+        ref={webcamRef}
+        height={hig}
+        width={wid}
+        mirrored={true}
+        style={{
+          alignSelf:'center',
+          height:`${hig}px`,
+          width:`${wid}px`
+        }}
+      />
       </header>
     </div>
   );
