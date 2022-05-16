@@ -1,0 +1,28 @@
+      const [boxes, scores, classes, valid] = pred
+      const boxes_data = boxes.dataSync();
+      const scores_data = scores.dataSync();
+      const classes_data = classes.dataSync();
+      const valid_data = valid.dataSync()[0];
+
+      var i;
+      for (i=0 ; i<valid_data;i++){
+        let [x1,y1,x2,y2] = boxes_data.slice(i*4,(i+1)*4)
+        x1 *= 640;
+        x2 *= 640;
+        y1 *= 640;
+        y2 *= 640;
+        const width = x2 - x1;
+        const height = y2 - y1;
+        // console.log(`x :${x1} \n y:${y1} \n h:${height}\n w:${width}\n`);
+        // console.log(scores_data);
+        
+        const klass = names[classes_data[i]];
+        const score = scores_data[i].toFixed(5);
+        if (score == 1){
+          console.log(score);
+        }
+        // ctx.strokeStyle = "#00FFFF";
+        // ctx.lineWidth = 4;
+        // ctx.strokeRect(x1, y1, width, height);
+      }
+      tf.dispose(pred)
