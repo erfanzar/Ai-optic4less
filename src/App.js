@@ -160,8 +160,8 @@ function App() {
           style={{
             position:'relative',
             alignSelf:'center',
-            height:`${hig}px`,
-            width:`${wid}px`,
+            height:`${400}px`,
+            width:`${400}px`,
             flex:1,
             flexDirection:'column',
           }}
