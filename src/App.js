@@ -34,7 +34,7 @@ function App() {
 
 
 
-  const Detection = async (Model,Model_Face) => {
+  const Detection = async (Model) => {
     if (
       typeof webcamRef.current !== "undefined"&&
       webcamRef.current !== null &&
@@ -56,30 +56,47 @@ function App() {
       const classes_data = classes.dataSync();
       const valid_data = valid.dataSync()[0];
 
-      const predict_face = await Model_Face.estimateFaces(video,false)
-      if (predict_face.length > 0) {
-        for (let i = 0; i < predict_face.length; i++) {
-          const start = predict_face[i].topLeft;
-          const end = predict_face[i].bottomRight;
-          let width_f = end[0] - start[0]
+      // const predict_face = await Model_Face.estimateFaces(video,false)
+      // if (predict_face.length > 0) {
+      //   for (let i = 0; i < predict_face.length; i++) {
+      //     const start = predict_face[i].topLeft;
+      //     const end = predict_face[i].bottomRight;
+      //     let width_f = end[0] - start[0]
 
+      //     let dis = wid/width_f
+      //     // console.log(`Height :${height} , width : ${width}`);
+      //     if (dis*10 <15){
+      //       set_Distance("Nan");
+      //     }else{
+      //       set_Distance(Math.floor(((dis*10)*2.6)*2));
+
+      //     } 
+
+      //   }
+      // }
+        
+      var i;
+      for (i=0 ; i<valid_data;i++){
+        let [x1,y1,x2,y2] = boxes_data.slice(i*4,(i+1)*4)
+        if (scores_data[i].toFixed(2) > trash_hold){
+          x1*=640
+          x2*=640
+          // y1*=640
+          // y2*=640
+          
+          let width_f = x2-x1
           let dis = wid/width_f
-          // console.log(`Height :${height} , width : ${width}`);
+         
+     
           if (dis*10 <15){
             set_Distance("Nan");
           }else{
             set_Distance(Math.floor(((dis*10)*2.6)*2));
 
           } 
-
-        }
-      }
-        
-      var i;
-      for (i=0 ; i<valid_data;i++){
-        // let [x1,y1,x2,y2] = boxes_data.slice(i*4,(i+1)*4)
-        if (scores_data[i].toFixed(2) > trash_hold){
-
+      
+            
+          
       
           output = classes_data[i]
           // console.log('OutPut (Function): ', output);
