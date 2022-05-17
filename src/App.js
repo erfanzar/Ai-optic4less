@@ -4,7 +4,7 @@ import React , {useRef,useEffect, useState} from 'react';
 import './App.css';
 import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
-import * as model_face from '@tensorflow-models/blazeface'
+// import * as model_face from '@tensorflow-models/blazeface'
 
 
 function App() {
@@ -83,7 +83,7 @@ function App() {
           x2*=640
           // y1*=640
           // y2*=640
-          
+
           let width_f = x2-x1
           let dis = wid/width_f
          
@@ -122,12 +122,12 @@ function App() {
       route = 1
       const Model = await tf.loadGraphModel(URL);
       
-      const Model_Face = await model_face.load()
+      // const Model_Face = await model_face.load()
       console.log('Face Model Loaded')
       console.log("Model Loaded");
       set_loading(false)
       setInterval(() => {
-          Detection(Model,Model_Face)      
+          Detection(Model)      
         }, 100);
     }
   }
