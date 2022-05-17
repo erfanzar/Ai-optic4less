@@ -11,7 +11,8 @@ function App() {
 
   
 
-  
+  const [loading,set_loading] = useState(true);
+
   const [show,set_show] = useState(null)
   const [TRue,set_TRue] = useState(null)
   const [FAlse,set_FAlse] = useState(null)
@@ -37,7 +38,8 @@ function App() {
     if (
       typeof webcamRef.current !== "undefined"&&
       webcamRef.current !== null &&
-      typeof webcamRef.current.video !== "undefined"
+      typeof webcamRef.current.video !== "undefined"&&
+      loading === false
     )
     {
       const video = webcamRef.current.video
@@ -102,10 +104,11 @@ function App() {
       
       route = 1
       const Model = await tf.loadGraphModel(URL);
+      
       const Model_Face = await model_face.load()
       console.log('Face Model Loaded')
       console.log("Model Loaded");
-      
+      set_loading(false)
       setInterval(() => {
           Detection(Model,Model_Face)      
         }, 100);
@@ -113,55 +116,57 @@ function App() {
   }
 
   const exam = (side) => {
-    let True  = 0;
-    let False = 0;
-    let i = 0;
-    let start = Date.now();
-    setInterval(()=>{
-      
+    if(loading === false){
+      let True  = 0;
+      let False = 0;
+      let i = 0;
+      let start = Date.now();
+      setInterval(()=>{
+        
 
-      if (side === output){
-        True += 1
+        if (side === output){
+          True += 1
+          
+          side = Math.floor(Math.random()*4)
+          set_show(side)
+          i += 1
+          // console.log('true');
+        }else{
+          
+          let  current = Date.now()
+          // console.log('sec :' , current - start);
         
-        side = Math.floor(Math.random()*4)
-        set_show(side)
-        i += 1
-        // console.log('true');
-      }else{
-        
-        let  current = Date.now()
-        // console.log('sec :' , current - start);
+          setInterval(()=>{
+            current = Date.now()
+          },1)
+          // console.log(current - start);
+          if(current-start >= 5000){
+          
+                start = Date.now();
+                False += 1
+                current = Date.now()
+                side = Math.floor(Math.random()*4)
+                i += 1
+                set_show(side)
+                // console.log('sec : ',current-start);
+                // console.log('ur target set to :' , names[side] );
+              
+            }
+          
+              
       
-        setInterval(()=>{
-          current = Date.now()
-        },1)
-        // console.log(current - start);
-        if(current-start >= 5000){
-        
-              start = Date.now();
-              False += 1
-              current = Date.now()
-              side = Math.floor(Math.random()*4)
-              i += 1
-              set_show(side)
-              // console.log('sec : ',current-start);
-              // console.log('ur target set to :' , names[side] );
-            
           }
+          
         
-            
-    
-        }
         
-      
-      
-      total = [True,False-i]
+        total = [True,False-i]
 
-      set_FAlse(False)
-      set_TRue(True)
+        set_FAlse(False)
+        set_TRue(True)
 
-      // console.log(total)
-    },1000)
+        // console.log(total)
+      },1000)
+    }
   }
 
 
@@ -180,105 +185,119 @@ function App() {
 
 
 
+  if (loading === false){
+    return (
+      
+      <div className="App">
+        <header className="App-header">
+          <Webcam
+            ref={webcamRef}
+            height={hig}
+            width={wid}
+            mirrored={true}
+            style={{
+              position:'relative',
+              alignSelf:'center',
+              height:`${400}px`,
+              width:`${400}px`,
+              flex:1,
+              flexDirection:'column',
+            }}
+          />
+          <p style={{
+            fontWeight:'bold',
+            scale:2,
+            color:'white'
+          }}>
+            True : {TRue}
+          </p>
+          <p style={{
+            fontWeight:'bold',
+            scale:2,
+            color:'white'
+          }}>
+            False : {FAlse}
+          </p>
+          <p style={{
+            fontWeight:'bold',
+            scale:2,
+            color:'white'
+          }}>
+            Distance : {distance} Cm
+          </p>
+          {
+            show === 0 ?
+            <div>
+              <img
+                src='/assets/images/BottomSide.jpg'
+                style={{
+                  position:'relative',
+                  height:`${distance}px`,
+                  width:`${distance}px`,
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <Webcam
-          ref={webcamRef}
-          height={hig}
-          width={wid}
-          mirrored={true}
-          style={{
-            position:'relative',
-            alignSelf:'center',
-            height:`${400}px`,
-            width:`${400}px`,
-            flex:1,
-            flexDirection:'column',
-          }}
-        />
-        <p style={{
-          fontWeight:'bold',
-          scale:2,
-          color:'white'
-        }}>
-          True : {TRue}
-        </p>
-        <p style={{
-          fontWeight:'bold',
-          scale:2,
-          color:'white'
-        }}>
-          False : {FAlse}
-        </p>
-        <p style={{
-          fontWeight:'bold',
-          scale:2,
-          color:'white'
-        }}>
-          Distance : {distance} Cm
-        </p>
-        {
-          show === 0 ?
-          <div>
-            <img
-              src='/assets/images/BottomSide.jpg'
-              style={{
-                position:'relative',
-                height:`${distance}px`,
-                width:`${distance}px`,
-
-              }}
-            ></img>
-          </div>:<div/>
-        }
-        {
-          show === 1 ?
-          <div>
-            <img
-              src='/assets/images/LeftSide.jpg'
-              style={{
-                position:'relative',
-                height:`${distance}px`,
-                width:`${distance}px`,
+                }}
+              ></img>
+            </div>:<div/>
+          }
+          {
+            show === 1 ?
+            <div>
+              <img
+                src='/assets/images/LeftSide.jpg'
+                style={{
+                  position:'relative',
+                  height:`${distance}px`,
+                  width:`${distance}px`,
 
 
-              }}
-            ></img>
-          </div>:<div/>
-        }
-        {
-          show === 2 ?
-          <div>
-            <img
-              src='/assets/images/RightSide.jpg'
-              style={{
-                position:'relative',
-                height:`${distance}px`,
-                width:`${distance}px`,
+                }}
+              ></img>
+            </div>:<div/>
+          }
+          {
+            show === 2 ?
+            <div>
+              <img
+                src='/assets/images/RightSide.jpg'
+                style={{
+                  position:'relative',
+                  height:`${distance}px`,
+                  width:`${distance}px`,
 
-              }}
-            ></img>
-          </div>:<div/>
-        }
-        {
-          show === 3 ?
-          <div>
-            <img
-              src='/assets/images/Topside.jpg'
-              style={{
-                position:'relative',
-                height:`${distance}px`,
-                width:`${distance}px`,
+                }}
+              ></img>
+            </div>:<div/>
+          }
+          {
+            show === 3 ?
+            <div>
+              <img
+                src='/assets/images/Topside.jpg'
+                style={{
+                  position:'relative',
+                  height:`${distance}px`,
+                  width:`${distance}px`,
 
-              }}
-            ></img>
-          </div>:<div/>
-        }
-      </header>
-    </div>
-  );
+                }}
+              ></img>
+            </div>:<div/>
+          }
+        </header>
+      </div>
+    );
+  }else{
+    return(
+    <div className='loading'>
+    <p style={{
+      // transform:`translatey(${translate}px)`
+    }}>
+      Loading Model From Server...
+      Please Be Paitent   
+    </p>
+    <div class="loader">Loading...</div>
+  </div>
+    )
+  }
 }
 
 export default App;
