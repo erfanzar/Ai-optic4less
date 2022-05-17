@@ -3,74 +3,35 @@
 import React , {useRef,useEffect, useState} from 'react';
 import './App.css';
 import Webcam from 'react-webcam';
-import * as tf from '@tensorflow/tfjs'
+import * as tf from '@tensorflow/tfjs';
 
 
 function App() {
   
   
-
-  const [output,set_output] = useState(null)
   const [show,set_show] = useState(null)
 
 
-  let check_out = output;
+  let output;
   let None_Change = 0;
-  let side ;
-  let wrong_side = 5000;
-  let is_true = false
   let route = 0;
-
+  let total;
 
   const wid = 640;
   const hig = 640;
-  const trash_hold = 0.7;
+  const trash_hold = 0.5;
   const webcamRef = useRef(null);
   const URL = 'https://model.almubdieuntech.com/tfjs/model.json'
 
-  // const names = ['bottom','left','right','top']
-
-
-  useEffect( () => {
-    if (route === 0) {
-        
-        LoadModel()
-        side = Math.floor(Math.random()*4)
-        set_show(side)
-        let total = exam(side,check_out)
-        setInterval(()=>{
-          console.log(total)
-        }
-          ,1000)
-    }
-  },[None_Change])
-
-
-
-
-  const LoadModel = async () => {
-    if (route === 0){
-      
-      route = 1
-      const Model = await tf.loadGraphModel(URL);
-      console.log("Model Loaded");
-      
-      setInterval(() => {
-        Detection(Model,check_out)
-        check(check_out)
-        
-      }, 100);
-    }
-  }
-
-
+  const names = ['bottom','left','right','top']
 
 
 
   const Detection = async (Model) => {
     if (
       typeof webcamRef.current !== "undefined"&&
-      webcamRef.current !== null
+      webcamRef.current !== null &&
+      typeof webcamRef.current.video !== "undefined"
     )
     {
       const video = webcamRef.current.video
@@ -91,12 +52,10 @@ function App() {
       for (i=0 ; i<valid_data;i++){
         // let [x1,y1,x2,y2] = boxes_data.slice(i*4,(i+1)*4)
         if (scores_data[i].toFixed(2) > trash_hold){
-          set_output(classes_data[i]);
-    
+          
+          output = classes_data[i]
+          console.log('OutPut (Function): ', output);
         }
-         
-        
-        
       }
       tf.dispose(pred)
       tf.dispose(boxes_data)
@@ -112,42 +71,80 @@ function App() {
 
 
 
-  const exam = (side_element,output_element) => {
+  const LoadModel = async (side) => {
+    if (route === 0){
+      
+      route = 1
+      const Model = await tf.loadGraphModel(URL);
+      console.log("Model Loaded");
+      
+      setInterval(() => {
+          Detection(Model)      
+        }, 100);
+    }
+  }
+
+  const exam = (side) => {
     let True  = 0;
     let False = 0;
-    if (side_element === output_element){
-      True += 1
-    }else{
-      setTimeout(()=>{False +=1},wrong_side)
-    }
+    let gussed_true = true;
+    setInterval(()=>{
+      let start = Date.now();
 
-    const total = [True,False]
-    return total
-  }
-
-
-  
-
-  const check = ()=>{
+      let target_True = 1
+      if (side === output){
+        True += 1
+        target_True+=1
+        side = Math.floor(Math.random()*4)
+        set_show(side)
+        gussed_true = true
+        console.log('true');
+      }else{
+        
+        let  current = Date.now()
+        // console.log('sec :' , current - start);
+        if(gussed_true === false){
+          setInterval(()=>{
+            current = Date.now()
+          },1)
+            if (gussed_true === false){
+              if(current-start === 5000){
+                if(target_True !== True){
+                  if (gussed_true === false){
+                    False += 1
+                    current = Date.now()
+                    side = Math.floor(Math.random()*4)
+                    set_show(side)
+                    console.log('sec : ',current-start);
+                    console.log('ur target set to :' , names[side] );
+                  }
+                }
+              }
+            }
     
-    if (
-      check_out === side
-    ){
-      is_true = true
-      console.log('worked');
-      side = (Math.floor((Math.random()*4)))
-      set_show(side)
-    }else{
-      is_true = false
-    }
+        }
+        
+      }
+      gussed_true = false
+      total = [True,False]
+      console.log(total)
+    },1000)
   }
 
 
 
 
-  setInterval(()=>{
-    console.log(check_out)
-  },1000)
+  useEffect( () => {
+    if (route === 0) {
+
+      // let total;
+      let side = Math.floor(Math.random()*4)
+      set_show(side)
+      LoadModel(side)
+      exam(side)
+    }
+  },[None_Change])
+
 
 
 
