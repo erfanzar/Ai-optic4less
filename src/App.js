@@ -31,15 +31,15 @@ function App() {
   const URL = 'https://model.almubdieuntech.com/tfjs/model.json'
 
   // const names = ['bottom','left','right','top']
-
+  let gg = null;
 
 
   const Detection = async (Model) => {
     if (
       typeof webcamRef.current !== "undefined"&&
       webcamRef.current !== null &&
-      typeof webcamRef.current.video !== "undefined"&&
-      loading === false
+      typeof webcamRef.current.video !== "undefined" &&
+      gg !== null
     )
     {
       const video = webcamRef.current.video
@@ -126,6 +126,7 @@ function App() {
       console.log('Face Model Loaded')
       console.log("Model Loaded");
       set_loading(false)
+      gg = true
       setInterval(() => {
           Detection(Model)      
         }, 100);
@@ -133,13 +134,13 @@ function App() {
   }
 
   const exam = (side) => {
-    if(loading === false){
+    
       let True  = 0;
       let False = 0;
       let i = 0;
       let start = Date.now();
       setInterval(()=>{
-        
+        if(gg !== null){
 
         if (side === output){
           True += 1
@@ -182,9 +183,9 @@ function App() {
         set_TRue(True)
 
         // console.log(total)
-      },1000)
+   } },1000)
     }
-  }
+  
 
 
 
