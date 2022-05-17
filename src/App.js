@@ -4,12 +4,18 @@ import React , {useRef,useEffect, useState} from 'react';
 import './App.css';
 import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
+import * as model_face from '@tensorflow-models/blazeface'
 
 
 function App() {
+
   
+
   
   const [show,set_show] = useState(null)
+  const [TRue,set_TRue] = useState(null)
+  const [FAlse,set_FAlse] = useState(null)
+  const [distance,set_Distance] = useState(null)
 
 
   let output;
@@ -23,11 +29,11 @@ function App() {
   const webcamRef = useRef(null);
   const URL = 'https://model.almubdieuntech.com/tfjs/model.json'
 
-  const names = ['bottom','left','right','top']
+  // const names = ['bottom','left','right','top']
 
 
 
-  const Detection = async (Model) => {
+  const Detection = async (Model,Model_Face) => {
     if (
       typeof webcamRef.current !== "undefined"&&
       webcamRef.current !== null &&
@@ -48,13 +54,33 @@ function App() {
       const classes_data = classes.dataSync();
       const valid_data = valid.dataSync()[0];
 
+      const predict_face = await Model_Face.estimateFaces(video,false)
+      if (predict_face.length > 0) {
+        for (let i = 0; i < predict_face.length; i++) {
+          const start = predict_face[i].topLeft;
+          const end = predict_face[i].bottomRight;
+          let width_f = end[0] - start[0]
+
+          let dis = wid/width_f
+          // console.log(`Height :${height} , width : ${width}`);
+          if (dis*10 <15){
+            set_Distance("Nan");
+          }else{
+            set_Distance(Math.floor(((dis*10)*2.6)*2));
+
+          } 
+
+        }
+      }
+        
       var i;
       for (i=0 ; i<valid_data;i++){
         // let [x1,y1,x2,y2] = boxes_data.slice(i*4,(i+1)*4)
         if (scores_data[i].toFixed(2) > trash_hold){
-          
+
+      
           output = classes_data[i]
-          console.log('OutPut (Function): ', output);
+          // console.log('OutPut (Function): ', output);
         }
       }
       tf.dispose(pred)
@@ -76,10 +102,12 @@ function App() {
       
       route = 1
       const Model = await tf.loadGraphModel(URL);
+      const Model_Face = await model_face.load()
+      console.log('Face Model Loaded')
       console.log("Model Loaded");
       
       setInterval(() => {
-          Detection(Model)      
+          Detection(Model,Model_Face)      
         }, 100);
     }
   }
@@ -87,19 +115,18 @@ function App() {
   const exam = (side) => {
     let True  = 0;
     let False = 0;
-    
+    let i = 0;
     let start = Date.now();
     setInterval(()=>{
       
 
-      let target_True = 1
       if (side === output){
         True += 1
-        target_True+=1
+        
         side = Math.floor(Math.random()*4)
         set_show(side)
-        
-        console.log('true');
+        i += 1
+        // console.log('true');
       }else{
         
         let  current = Date.now()
@@ -108,17 +135,18 @@ function App() {
         setInterval(()=>{
           current = Date.now()
         },1)
-        console.log(current - start);
+        // console.log(current - start);
         if(current-start >= 5000){
-          if(target_True !== True){
+        
               start = Date.now();
               False += 1
               current = Date.now()
               side = Math.floor(Math.random()*4)
+              i += 1
               set_show(side)
-              console.log('sec : ',current-start);
-              console.log('ur target set to :' , names[side] );
-            }
+              // console.log('sec : ',current-start);
+              // console.log('ur target set to :' , names[side] );
+            
           }
         
             
@@ -127,8 +155,12 @@ function App() {
         
       
       
-      total = [True,False]
-      console.log(total)
+      total = [True,False-i]
+
+      set_FAlse(False)
+      set_TRue(True)
+
+      // console.log(total)
     },1000)
   }
 
@@ -166,6 +198,27 @@ function App() {
             flexDirection:'column',
           }}
         />
+        <p style={{
+          fontWeight:'bold',
+          scale:2,
+          color:'white'
+        }}>
+          True : {TRue}
+        </p>
+        <p style={{
+          fontWeight:'bold',
+          scale:2,
+          color:'white'
+        }}>
+          False : {FAlse}
+        </p>
+        <p style={{
+          fontWeight:'bold',
+          scale:2,
+          color:'white'
+        }}>
+          Distance : {distance} Cm
+        </p>
         {
           show === 0 ?
           <div>
@@ -173,8 +226,8 @@ function App() {
               src='/assets/images/BottomSide.jpg'
               style={{
                 position:'relative',
-                height:'150px',
-                width:'150px',
+                height:`${distance}px`,
+                width:`${distance}px`,
 
               }}
             ></img>
@@ -187,8 +240,9 @@ function App() {
               src='/assets/images/LeftSide.jpg'
               style={{
                 position:'relative',
-                height:'150px',
-                width:'150px',
+                height:`${distance}px`,
+                width:`${distance}px`,
+
 
               }}
             ></img>
@@ -201,8 +255,9 @@ function App() {
               src='/assets/images/RightSide.jpg'
               style={{
                 position:'relative',
-                height:'150px',
-                width:'150px',
+                height:`${distance}px`,
+                width:`${distance}px`,
+
               }}
             ></img>
           </div>:<div/>
@@ -214,8 +269,9 @@ function App() {
               src='/assets/images/Topside.jpg'
               style={{
                 position:'relative',
-                height:'150px',
-                width:'150px',
+                height:`${distance}px`,
+                width:`${distance}px`,
+
               }}
             ></img>
           </div>:<div/>
