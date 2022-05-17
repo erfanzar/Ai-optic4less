@@ -19,7 +19,7 @@ function App() {
 
   const wid = 640;
   const hig = 640;
-  const trash_hold = 0.5;
+  const trash_hold = 0.6;
   const webcamRef = useRef(null);
   const URL = 'https://model.almubdieuntech.com/tfjs/model.json'
 
@@ -87,9 +87,10 @@ function App() {
   const exam = (side) => {
     let True  = 0;
     let False = 0;
-    let gussed_true = true;
+    
+    let start = Date.now();
     setInterval(()=>{
-      let start = Date.now();
+      
 
       let target_True = 1
       if (side === output){
@@ -97,35 +98,35 @@ function App() {
         target_True+=1
         side = Math.floor(Math.random()*4)
         set_show(side)
-        gussed_true = true
+        
         console.log('true');
       }else{
         
         let  current = Date.now()
         // console.log('sec :' , current - start);
-        if(gussed_true === false){
-          setInterval(()=>{
-            current = Date.now()
-          },1)
-            if (gussed_true === false){
-              if(current-start === 5000){
-                if(target_True !== True){
-                  if (gussed_true === false){
-                    False += 1
-                    current = Date.now()
-                    side = Math.floor(Math.random()*4)
-                    set_show(side)
-                    console.log('sec : ',current-start);
-                    console.log('ur target set to :' , names[side] );
-                  }
-                }
-              }
+      
+        setInterval(()=>{
+          current = Date.now()
+        },1)
+        console.log(current - start);
+        if(current-start >= 5000){
+          if(target_True !== True){
+              start = Date.now();
+              False += 1
+              current = Date.now()
+              side = Math.floor(Math.random()*4)
+              set_show(side)
+              console.log('sec : ',current-start);
+              console.log('ur target set to :' , names[side] );
             }
+          }
+        
+            
     
         }
         
-      }
-      gussed_true = false
+      
+      
       total = [True,False]
       console.log(total)
     },1000)
