@@ -24,7 +24,7 @@ function App() {
 
   
   const Allowed_size = 430
-  const trp = 5;
+  const trp = 6;
   const wid = 640;
   const hig = 640;
   const trash_hold = 0.6;
@@ -40,7 +40,7 @@ function App() {
   let total;
   let gg = null;
   let time = 0;
-  let allowed_false = 3;
+  let allowed_false = 4;
   let perma_false = 2
 
   const Detection = async (Model,Model_Face) => {
@@ -255,7 +255,7 @@ function App() {
             True += 1
             side = Math.floor(Math.random()*4)
             time +=1
-            if (False > perma_false){
+            if (False >= perma_false){
               allowed_false +=1 
               perma_false -= 1
             }
