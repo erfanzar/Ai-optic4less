@@ -16,6 +16,7 @@ function App() {
   const [test_end,set_test_end] = useState(false)
 
 
+
   const [show,set_show] = useState(null)
   const [TRue,set_TRue] = useState(null)
   const [FAlse,set_FAlse] = useState(null)
@@ -29,7 +30,9 @@ function App() {
   const hig = 640;
   const trash_hold = 0.6;
   const fully_width = window.innerWidth
-  const URL = 'https://ai.almubdieuntech.com/tfjs/model.json'
+  const time_test_run = 6000;
+  // const URL = 'https://ai.almubdieuntech.com/tfjs/model.json'
+  const URL = 'https://ai-optic4less.vercel.app/assets/Model/model.json'
   // const names = ['bottom','face','left','right','top']
 
   let end = false;
@@ -267,7 +270,7 @@ function App() {
             {
               current = Date.now()
             },1)
-            if(current-start >= 5000)
+            if(current-start >= time_test_run)
             {
               start = Date.now();
               False += 1
