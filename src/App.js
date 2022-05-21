@@ -31,8 +31,8 @@ function App() {
   const trash_hold = 0.6;
   const fully_width = window.innerWidth
   const time_test_run = 6000;
-  // const URL = 'https://ai.almubdieuntech.com/tfjs/model.json'
-  const URL = 'https://ai-optic4less.vercel.app/assets/Model/model.json'
+  const URL = 'https://ai.almubdieuntech.com/tfjs/model.json'
+  // const URL = 'https://ai-optic4less.vercel.app/assets/Model/model.json'
   // const names = ['bottom','face','left','right','top']
 
   let end = false;
@@ -253,6 +253,21 @@ function App() {
       {
         if(gg !== null && v !== null && end !== true)
         {
+          if (output === 0){
+            output = 0
+          }
+          if (output === 1){
+            output = 'face'
+          }
+          if (output === 2){
+            output = 1
+          }
+          if (output === 3){
+            output = 2
+          }
+          if (output === 4){
+            output = 3
+          }
           if (side === output)
           {
             True += 1
