@@ -6,6 +6,240 @@ import * as tf from '@tensorflow/tfjs';
 // import * as tfn from "@tensorflow/tfjs-node";
 import * as model_face from '@tensorflow-models/blazeface'
 
+const images = ['BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg', 'BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg', 'BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg', 'BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg', 'BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg', 'BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg','BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg','BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg','BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg']
+
+const ImageShow = (onShow, index, px) => {
+    if (onShow === true) {
+
+        return (<div
+            style={{
+                border: '5px solid cyan',
+                height: `${px + 10}px`,
+                width: `${px + 10}px`,
+                borderColor: 'cyan',
+                justifyContent: 'center',
+                alignItems: 'center',
+                alignSelf: 'center',
+                color: 'cyan',
+                borderRadius: '10px',
+                margin: '20px',
+                display: 'flex'
+            }}
+        ><img className='Side'
+              src={`/assets/images/${images[index]}`}
+              style={{
+                  height: `${px}px`, width: `${px}px`, margin: '20px'
+              }}
+        /></div>)
+    } else {
+        return (<div
+            style={{
+
+
+                height: `${px + 10}px`, width: `${px + 10}px`,
+
+                justifyContent: 'center', alignItems: 'center', alignSelf: 'center',
+
+                margin: '20px', display: 'flex'
+            }}
+        ><img className='Side'
+              src={`/assets/images/${images[index]}`}
+              style={{
+                  height: `${px}px`, width: `${px}px`, margin: '20px'
+              }}
+        /></div>)
+    }
+}
+
+
+const TestShow = (ac, af, px) => {
+    const total = ac + af
+    // console.log(ac + af)
+    let font = 20
+    if (total <= 0) {
+        return (<div style={{
+            display: 'flex',
+
+        }}>
+            {ImageShow(total === 0, 0, px)}
+            <div style={{
+                display: 'flex'
+            }}>
+                <p style={{
+                    color: 'cyan',
+                    margin: '20px',
+                    fontSize: `${font}px`
+                }}>
+                    20/200
+                </p>
+            </div>
+        </div>)
+    }
+    if (total >= 1 && total < 3) {
+        px /= 2
+        return (<div style={{
+            display: 'flex',
+
+        }}>
+            {ImageShow(total === 1, 1, px)}
+
+            {ImageShow(total === 2, 2, px)}
+            <div style={{
+                display: 'flex'
+            }}>
+                <p style={{
+                    color: 'cyan',
+                    margin: '20px',
+                    fontSize: `${font}px`
+                }}>
+                    20/100
+                </p>
+            </div>
+        </div>)
+    }
+    if (total >= 3 && total < 6) {
+        px /= 3
+        return (<div style={{
+            display: 'flex',
+        }}>
+            {ImageShow(total === 3, 3, px)}
+            {ImageShow(total === 4, 4, px)}
+            {ImageShow(total === 5, 5, px)}
+            <div style={{
+                display: 'flex'
+            }}>
+                <p style={{
+                    color: 'cyan',
+                    margin: '20px',
+                    fontSize: `${font}px`
+                }}>
+                    20/70
+                </p>
+            </div>
+        </div>)
+    }
+    if (total >= 6 && total < 10) {
+        px /= 4
+        return (<div style={{
+            display: 'flex',
+        }}>
+            {ImageShow(total === 6, 6, px)}
+            {ImageShow(total === 7, 7, px)}
+            {ImageShow(total === 8, 8, px)}
+            {ImageShow(total === 9, 9, px)}
+            <div style={{
+                display: 'flex'
+            }}>
+                <p style={{
+                    color: 'cyan',
+                    margin: '20px',
+                    fontSize: `${font}px`
+                }}>
+                    20/50
+                </p>
+            </div>
+        </div>)
+    }
+    if (total >= 10 && total < 15) {
+        px /= 5
+        return (<div style={{
+            display: 'flex',
+        }}>
+            {ImageShow(total === 10, 10, px)}
+            {ImageShow(total === 11, 11, px)}
+            {ImageShow(total === 12, 12, px)}
+            {ImageShow(total === 13, 13, px)}
+            {ImageShow(total === 14, 14, px)}
+            <div style={{
+                display: 'flex'
+            }}>
+                <p style={{
+                    color: 'cyan',
+                    margin: '20px',
+                    fontSize: `${font}px`
+                }}>
+                    20/40
+                </p>
+            </div>
+        </div>)
+    }
+    if (total >= 14 && total < 21) {
+        px /= 6
+        return (<div style={{
+            display: 'flex',
+        }}>
+            {ImageShow(total === 15, 15, px)}
+            {ImageShow(total === 16, 16, px)}
+            {ImageShow(total === 17, 17, px)}
+            {ImageShow(total === 18, 18, px)}
+            {ImageShow(total === 19, 19, px)}
+            {ImageShow(total === 20, 20, px)}
+            <div style={{
+                display: 'flex'
+            }}>
+                <p style={{
+                    color: 'cyan',
+                    margin: '20px',
+                    fontSize: `${font}px`
+                }}>
+                    20/30
+                </p>
+            </div>
+        </div>)
+    }
+    if (total >= 21 && total < 28) {
+        px /= 7
+        return (<div style={{
+            display: 'flex',
+        }}>
+            {ImageShow(total === 21, 21, px)}
+            {ImageShow(total === 22, 22, px)}
+            {ImageShow(total === 23, 23, px)}
+            {ImageShow(total === 24, 24, px)}
+            {ImageShow(total === 25, 25, px)}
+            {ImageShow(total === 26, 26, px)}
+            {ImageShow(total === 27, 27, px)}
+            <div style={{
+                display: 'flex'
+            }}>
+                <p style={{
+                    color: 'cyan',
+                    margin: '20px',
+                    fontSize: `${font}px`
+                }}>
+                    20/20
+                </p>
+            </div>
+        </div>)
+    }
+    if (total >= 28 && total < 36) {
+        px /= 8
+        return (<div style={{
+            display: 'flex',
+        }}>
+            {ImageShow(total === 28, 28, px)}
+            {ImageShow(total === 29, 29, px)}
+            {ImageShow(total === 30, 30, px)}
+            {ImageShow(total === 31, 31, px)}
+            {ImageShow(total === 32, 32, px)}
+            {ImageShow(total === 33, 33, px)}
+            {ImageShow(total === 34, 34, px)}
+            {ImageShow(total === 35, 35, px)}
+            <div style={{
+                display: 'flex'
+            }}>
+                <p style={{
+                    color: 'cyan',
+                    margin: '20px',
+                    fontSize: `${font}px`
+                }}>
+                    20/10
+                </p>
+            </div>
+        </div>)
+    }
+}
+
 
 function App() {
 
@@ -17,20 +251,19 @@ function App() {
     const [test_end, set_test_end] = useState(false)
 
     const fully_width = window.innerWidth
-
+    const [ts, setTs] = useState([0, 0, 0])
     const [show, set_show] = useState(null)
-    const [TRue, set_TRue] = useState(null)
-    const [FAlse, set_FAlse] = useState(null)
+    const [TRue, set_TRue] = useState(0)
+    const [FAlse, set_FAlse] = useState(0)
     const [distance, set_Distance] = useState(null)
-    const [px, set_px] = useState(null);
-
+    const [px, set_px] = useState(null)
 
     const Allowed_size = 430
     const trp = 6;
     const wid = 640;
     const hig = 640;
 
-    const time_test_run = 6000;
+    const time_test_run = 16000;
     // const URL = 'https://ai.optics4less.com/Model/New/model.json'
     const URL = 'https://ai.optics4less.com/Model/Old/model.json'
     const classes_name = ['bottom', 'left', 'right', 'top']
@@ -40,23 +273,14 @@ function App() {
     let output;
     let None_Change = 0;
     let route = 0;
-    let total;
+    let total = [0, 0, 0];
     let gg = null;
     let time = 0;
-    let allowed_false = 4;
-    let perma_false = 2
+    let allowed_false = 30;
+    let p_false = 2
 
-    const Detection = async (
-        Model_Face,
-        Model
-    ) => {
-        if (
-            typeof webcamRef.current !== "undefined" &&
-            webcamRef.current !== null &&
-            typeof webcamRef.current.video !== "undefined" &&
-            gg !== null &&
-            end !== true
-        ) {
+    const Detection = async (Model_Face, Model) => {
+        if (typeof webcamRef.current !== "undefined" && webcamRef.current !== null && typeof webcamRef.current.video !== "undefined" && gg !== null && end !== true) {
             const video = webcamRef.current.video
             const VideoWeight = webcamRef.current.video.videoWidth;
             webcamRef.current.video.height = webcamRef.current.video.videoHeight;
@@ -66,66 +290,69 @@ function App() {
             const pred = await Model.executeAsync(x)
 
             const [boxes, scores, classes, valid] = pred
-            // console.log(pred)
+
             const boxes_data = boxes.dataSync();
             const scores_data = scores.dataSync();
             const classes_data = classes.dataSync();
             const valid_data = valid.dataSync()[0];
 
-            const predict_face = await Model_Face.estimateFaces(video, false)
-            if (predict_face.length > 0) {
-                for (let i = 0; i < predict_face.length; i++) {
-                    const start = predict_face[i].topLeft;
-                    const end = predict_face[i].bottomRight;
-                    let width_f = end[0] - start[0]
+            if (Model_Face != null) {
+                const predict_face = await Model_Face.estimateFaces(video, false)
+                if (predict_face.length > 0) {
+                    for (let i = 0; i < predict_face.length; i++) {
+                        const start = predict_face[i].topLeft;
+                        const end = predict_face[i].bottomRight;
+                        let width_f = end[0] - start[0]
 
-                    let dis = wid / width_f
-                    // console.log(`Height :${height} , width : ${width}`);
-                    if (fully_width > Allowed_size) {
-                        if (v === null) {
-                            console.log('Windows or mac System');
-                            console.log(`loaded width : ${fully_width}`);
-                            v = true
+                        let dis = wid / width_f
+
+                        if (fully_width > Allowed_size) {
+                            if (v === null) {
+                                console.log('Windows or mac System');
+                                console.log(`loaded width : ${fully_width}`);
+                                v = true
+                            }
+                            if (dis * 10 < 15) {
+                                set_Distance("Nan");
+                            } else {
+                                set_Distance(Math.floor(((dis * 10) * 2.6) * 1.5));
+                            }
+                            if (0 < Math.floor(((dis * 10) * 2.6) * 1.5) && Math.floor(((dis * 10) * 2.6) * 1.5) < 90) {
+                                set_px(100 - (time * trp))
+                            } else if (90 < Math.floor(((dis * 10) * 2.6) * 1.5) && Math.floor(((dis * 10) * 2.6) * 1.5) < 160) {
+                                set_px(150 - (time * trp))
+                            } else if (160 < Math.floor(((dis * 10) * 2.6) * 1.5) && Math.floor(((dis * 10) * 2.6) * 1.5) < 250) {
+                                set_px(190 - (time * trp))
+                            }
                         }
-                        if (dis * 10 < 15) {
-                            set_Distance("Nan");
-                        } else {
-                            set_Distance(Math.floor(((dis * 10) * 2.6) * 1.5));
-                        }
-                        if (0 < Math.floor(((dis * 10) * 2.6) * 1.5) && Math.floor(((dis * 10) * 2.6) * 1.5) < 90) {
-                            set_px(100 - (time * trp))
-                        } else if (90 < Math.floor(((dis * 10) * 2.6) * 1.5) && Math.floor(((dis * 10) * 2.6) * 1.5) < 160) {
-                            set_px(150 - (time * trp))
-                        } else if (160 < Math.floor(((dis * 10) * 2.6) * 1.5) && Math.floor(((dis * 10) * 2.6) * 1.5) < 250) {
-                            set_px(190 - (time * trp))
-                        }
-                    }
-                    if (fully_width < Allowed_size) {
-                        if (v === null) {
-                            console.log('Mobile System');
-                            console.log(`loaded width : ${fully_width}`);
-                            v = true
-                        }
-                        if (dis * 10 < 15) {
-                            set_Distance("Nan");
-                        } else {
-                            set_Distance(Math.floor(((dis * 10) * 1.5)));
-                        }
-                        if (0 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 90) {
-                            set_px(100 - (time * trp))
-                        } else if (90 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 160) {
-                            set_px(150 - (time * trp))
-                        } else if (160 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 250) {
-                            set_px(190 - (time * trp))
+                        if (fully_width < Allowed_size) {
+                            if (v === null) {
+                                console.log('Mobile System');
+                                console.log(`loaded width : ${fully_width}`);
+                                v = true
+                            }
+                            if (dis * 10 < 15) {
+                                set_Distance("Nan");
+                            } else {
+                                set_Distance(Math.floor(((dis * 10) * 1.5)));
+                            }
+                            if (0 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 90) {
+                                set_px(100 - (time * trp))
+                            } else if (90 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 160) {
+                                set_px(150 - (time * trp))
+                            } else if (160 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 250) {
+                                set_px(190 - (time * trp))
+                            }
                         }
                     }
                 }
+            } else {
+                v = true
             }
-
-            var i;
+            let i;
             for (i = 0; i < valid_data; i++) {
 
-                console.log(scores_data[i].toFixed(2))
+
                 if (scores_data[i].toFixed(2) > 0.4) {
                     output = await classes.dataSync()[0, i]
                     console.log(classes_name[output])
@@ -151,17 +378,15 @@ function App() {
         if (route === 0) {
 
             route = 1
-            const Model_Face = await model_face.load()
-            console.log('Face Model Loaded')
+            // const Model_Face = await model_face.load()
+            // console.log('Face Model Loaded')
             const Model = await tf.loadGraphModel(URL);
             console.log("Model Loaded");
             set_loading(false)
             gg = true
+            const Model_Face = null
             setInterval(() => {
-                Detection(
-                    Model_Face,
-                    Model
-                )
+                Detection(Model_Face, Model)
 
             }, 100);
         }
@@ -177,11 +402,16 @@ function App() {
             if (gg !== null && v !== null && end !== true) {
                 if (side === output) {
                     True += 1
-                    side = Math.floor(Math.random() * 4)
+                    console.log(side)
+                    if (side === 3 || side > 3) {
+                        side = 0
+                    } else {
+                        side += 1
+                    }
                     time += 1
-                    if (False >= perma_false) {
+                    if (False >= p_false) {
                         allowed_false += 1
-                        perma_false -= 1
+                        p_false -= 1
                     }
                     set_show(side)
                 } else {
@@ -194,11 +424,17 @@ function App() {
                         False += 1
                         time += 1
                         current = Date.now()
-                        side = Math.floor(Math.random() * 4)
+                        console.log(side)
+                        if (side === 3 || side > 3) {
+                            side = 0
+                        } else {
+                            side += 1
+                        }
                         set_show(side)
                     }
                 }
                 total = [True, False - 1]
+                setTs([True, False - 1])
                 set_FAlse(False)
                 set_TRue(True)
                 if (False >= allowed_false) {
@@ -209,13 +445,13 @@ function App() {
                     console.log(total)
                 }
             }
-        }, 100)
+        }, 5000)
     }
 
 
     useEffect(() => {
         if (route === 0) {
-            let side = Math.floor(Math.random() * 4)
+            let side = 0
             set_show(side)
             LoadModel()
             exam(side)
@@ -224,105 +460,48 @@ function App() {
 
 
     if (loading === false) {
-        return (
-            <div>
-                {test_end !== true &&
-                    <div className='Page'>
+        return (<div>
+                {test_end !== true && <div className='Page'>
 
-                        <div className='result'>
-                            
-                            <p className='result1'>True : {TRue}</p>
-                            <p className='result2'>False : {FAlse}</p>
-                            <p className='result3'>Distance : {distance} Cm </p>
-                        </div>
-                        <div className='ImageCorner'>
+                    <div className='result'>
 
-                            {
-                                show === 0 && test_end !== true ?
-                                    <div>
-                                        <img className='Side'
-                                             src='/assets/images/BottomSide.jpg'
-                                             style={{
-                                                 height: `${px}px`,
-                                                 width: `${px}px`,
-                                             }}
-                                        />
-                                    </div> : <div/>
-                            }
-                            {
-                                show === 1 && test_end !== true ?
-                                    <div>
-                                        <img className='Side'
-                                             src='/assets/images/LeftSide.jpg'
-                                             style={{
-                                                 height: `${px}px`,
-                                                 width: `${px}px`,
-                                             }}
-                                        ></img>
-                                    </div> : <div/>
-                            }
-                            {
-                                show === 2 && test_end !== true ?
-                                    <div>
-                                        <img className='Side'
-                                             src='/assets/images/RightSide.jpg'
-                                             style={{
-                                                 height: `${px}px`,
-                                                 width: `${px}px`,
-                                             }}
-                                        ></img>
-                                    </div> : <div/>
-                            }
-                            {
-                                show === 3 && test_end !== true ?
-                                    <div>
-                                        <img className='Side'
-                                             src='/assets/images/Topside.jpg'
-                                             style={{
-                                                 height: `${px}px`,
-                                                 width: `${px}px`,
-                                             }}
-                                        ></img>
-                                    </div> : <div/>
-                            }
-                        </div>
-                        <Webcam
-                            ref={webcamRef}
-                            height={hig}
-                            width={wid}
-                            mirrored={true}
-                            className='camera'
-                            style={{
-                                height: `${300}px`,
-                                width: `${200}px`,
-                            }}
-                        />
-
+                        <p className='result1'>True : {TRue}</p>
+                        <p className='result2'>False : {FAlse}</p>
+                        <p className='result3'>Distance : {distance} Cm </p>
                     </div>
-                }
-                {
-                    test_end === true &&
-                    <div className='test_end'>
-                        <p className='end_result'>Test Ended</p>
-                        <p className='end_result'>True : {TRue}</p>
-                        <p className='end_result'>False : {FAlse}</p>
+                    <div className='ImageCorner'>
+                        {TestShow(TRue, FAlse, 150)}
                     </div>
-                }
+                    <Webcam
+                        ref={webcamRef}
+                        height={hig}
+                        width={wid}
+                        mirrored={true}
+                        className='camera'
+                        style={{
+                            height: `${300}px`, width: `${200}px`,
+                        }}
+                    />
+
+                </div>}
+                {test_end === true && <div className='test_end'>
+                    <p className='end_result'>Test Ended</p>
+                    <p className='end_result'>True : {TRue}</p>
+                    <p className='end_result'>False : {FAlse}</p>
+                </div>}
             </div>
 
         );
     } else {
-        return (
-            <div className='loading'>
-                <p>
-                    Loading Model From Server...
-                </p>
-                <p>
-                    Please Be Patient
-                </p>
-                <div class="loader">Loading...</div>
-            </div>
-        )
+        return (<div className='loading'>
+            <p>
+                Loading Model From Server...
+            </p>
+            <p>
+                Please Be Patient
+            </p>
+            <div class="loader">Loading...</div>
+        </div>)
     }
 }
 
