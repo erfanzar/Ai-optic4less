@@ -352,7 +352,15 @@ function App() {
                         let width_f = end[0] - start[0]
 
                         let dis = df(focal_distance, known_width, width_f)
+                        v = true
                         set_Distance(Math.floor(dis))
+                        if (0 < dis && dis < 90) {
+                            set_px(100 - (time * trp))
+                        } else if (90 < dis && dis < 160) {
+                            set_px(150 - (time * trp))
+                        } else if (160 < dis && dis < 250) {
+                            set_px(190 - (time * trp))
+                        }
                         // if (fully_width > Allowed_size) {
                         //     if (v === null) {
                         //         console.log('Windows or mac System');
@@ -383,13 +391,13 @@ function App() {
                         //     } else {
                         //         set_Distance(Math.floor(((dis * 10) * 1.5)));
                         //     }
-                        //     if (0 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 90) {
-                        //         set_px(100 - (time * trp))
-                        //     } else if (90 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 160) {
-                        //         set_px(150 - (time * trp))
-                        //     } else if (160 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 250) {
-                        //         set_px(190 - (time * trp))
-                        //     }
+                        if (0 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 90) {
+                            set_px(100 - (time * trp))
+                        } else if (90 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 160) {
+                            set_px(150 - (time * trp))
+                        } else if (160 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 250) {
+                            set_px(190 - (time * trp))
+                        }
                         // }
                     }
                 }
