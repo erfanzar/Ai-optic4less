@@ -2,11 +2,14 @@ import React, {useEffect, useRef, useState} from 'react';
 import './App.css';
 import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
+import * as cv from '@techstark/opencv-js'
 
+import {fl, df, detectHaarFace, loadHaarFaceModels} from './utils'
 // import * as tfn from "@tensorflow/tfjs-node";
-import * as model_face from '@tensorflow-models/blazeface'
+// import * as model_face from '@tensorflow-models/blazeface'
 
 const images = ['BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg', 'BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg', 'BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg', 'BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg', 'BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg', 'BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg', 'BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg', 'BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg', 'BottomSide.jpg', 'LeftSide.jpg', 'RightSide.jpg', 'TopSide.jpg']
+
 
 const ImageShow = (onShow, index, px) => {
     if (onShow === true) {
@@ -250,19 +253,10 @@ const Intrep = (x, xf, yf) => {
 }
 
 
-const known_distance = 70.5
-const known_width = 16
-const ref_image_face_width = 170
+const known_distance = 53.5
+const known_width = 26
+const ref_image_face_width = 290
 
-const fl = (measured_distance, real_width, width_in_rf_image) => {
-    const focal_length = (width_in_rf_image * measured_distance) / real_width
-    return focal_length
-}
-
-const df = (fl, real_face_width, face_width_in_frame) => {
-    const distance = (real_face_width * fl) / face_width_in_frame
-    return distance
-}
 
 function App() {
 
@@ -273,7 +267,7 @@ function App() {
 
     const [test_end, set_test_end] = useState(false)
 
-    const fully_width = window.innerWidth
+    // const fully_width = window.innerWidth
     const [ts, setTs] = useState([0, 0, 0])
     const [show, set_show] = useState(null)
     const [TRue, set_TRue] = useState(0)
@@ -281,7 +275,7 @@ function App() {
     const [distance, set_Distance] = useState(null)
     const [px, set_px] = useState(null)
 
-    const Allowed_size = 430
+    // const Allowed_size = 430
     const trp = 6;
     const wid = 640;
     const hig = 640;
@@ -304,7 +298,8 @@ function App() {
     let allowed_false = 30;
     let p_false = 2
 
-    const Detection = async (Model_Face, Model) => {
+    // const Detection = async (Model_Face, Model) => {
+    const Detection = async (Model) => {
         if (typeof webcamRef.current !== "undefined" && webcamRef.current !== null && typeof webcamRef.current.video !== "undefined" && gg !== null && end !== true) {
             const video = webcamRef.current.video
             const VideoWeight = webcamRef.current.video.videoWidth;
@@ -321,7 +316,6 @@ function App() {
                 const scores_data = scores.dataSync();
                 const classes_data = classes.dataSync();
                 const valid_data = valid.dataSync()[0];
-
                 let i;
                 for (i = 0; i < valid_data; i++) {
 
@@ -337,69 +331,76 @@ function App() {
                 tf.dispose(boxes_data)
                 tf.dispose(scores_data)
                 tf.dispose(classes_data)
+                tf.dispose(output)
                 tf.dispose(valid_data)
                 tf.dispose(boxes)
                 tf.dispose(scores)
                 tf.dispose(classes)
+                tf.dispose(x)
                 tf.dispose(valid)
             }
-            if (Model_Face != null) {
-                const predict_face = await Model_Face.estimateFaces(video, false)
-                if (predict_face.length > 0) {
-                    for (let i = 0; i < predict_face.length; i++) {
-                        const start = predict_face[i].topLeft;
-                        const end = predict_face[i].bottomRight;
-                        let width_f = end[0] - start[0]
+            // if (Model_Face != null) {
+            //     const predict_face = await Model_Face.estimateFaces(video, false)
+            // if (predict_face.length > 0) {
+            //     for (let i = 0; i < predict_face.length; i++) {
+            //         const start = predict_face[i].topLeft;
+            //         const end = predict_face[i].bottomRight;
+            //         let width_f = end[0] - start[0]
+            const img = cv.imread(webcamRef.current);
+            let width_f;
+            width_f = detectHaarFace(img);
+            if (width_f !== null) {
 
-                        let dis = df(focal_distance, known_width, width_f)
-                        v = true
-                        set_Distance(Math.floor(dis))
-                        if (0 < dis && dis < 90) {
-                            set_px(100 - (time * trp))
-                        } else if (90 < dis && dis < 160) {
-                            set_px(150 - (time * trp))
-                        } else if (160 < dis && dis < 250) {
-                            set_px(190 - (time * trp))
-                        }
-                        // if (fully_width > Allowed_size) {
-                        //     if (v === null) {
-                        //         console.log('Windows or mac System');
-                        //         console.log(`loaded width : ${fully_width}`);
-                        //         v = true
-                        //     }
-                        //     if (dis * 10 < 15) {
-                        //         set_Distance("Nan");
-                        //     } else {
-                        //         set_Distance(Math.floor(((dis * 10) * 2.6) * 1.5));
-                        //     }
-                        //     if (0 < Math.floor(((dis * 10) * 2.6) * 1.5) && Math.floor(((dis * 10) * 2.6) * 1.5) < 90) {
-                        //         set_px(100 - (time * trp))
-                        //     } else if (90 < Math.floor(((dis * 10) * 2.6) * 1.5) && Math.floor(((dis * 10) * 2.6) * 1.5) < 160) {
-                        //         set_px(150 - (time * trp))
-                        //     } else if (160 < Math.floor(((dis * 10) * 2.6) * 1.5) && Math.floor(((dis * 10) * 2.6) * 1.5) < 250) {
-                        //         set_px(190 - (time * trp))
-                        //     }
-                        // }
-                        // if (fully_width < Allowed_size) {
-                        //     if (v === null) {
-                        //         console.log('Mobile System');
-                        //         console.log(`loaded width : ${fully_width}`);
-                        //         v = true
-                        //     }
-                        //     if (dis * 10 < 15) {
-                        //         set_Distance("Nan");
-                        //     } else {
-                        //         set_Distance(Math.floor(((dis * 10) * 1.5)));
-                        //     }
-                        if (0 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 90) {
-                            set_px(100 - (time * trp))
-                        } else if (90 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 160) {
-                            set_px(150 - (time * trp))
-                        } else if (160 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 250) {
-                            set_px(190 - (time * trp))
-                        }
-                        // }
-                    }
+
+                let dis = df(focal_distance, known_width, width_f)
+                v = true
+                set_Distance(Math.floor(dis))
+                if (0 < dis && dis < 90) {
+                    set_px(100 - (time * trp))
+                } else if (90 < dis && dis < 160) {
+                    set_px(150 - (time * trp))
+                } else if (160 < dis && dis < 250) {
+                    set_px(190 - (time * trp))
+                }
+                // if (fully_width > Allowed_size) {
+                //     if (v === null) {
+                //         console.log('Windows or mac System');
+                //         console.log(`loaded width : ${fully_width}`);
+                //         v = true
+                //     }
+                //     if (dis * 10 < 15) {
+                //         set_Distance("Nan");
+                //     } else {
+                //         set_Distance(Math.floor(((dis * 10) * 2.6) * 1.5));
+                //     }
+                //     if (0 < Math.floor(((dis * 10) * 2.6) * 1.5) && Math.floor(((dis * 10) * 2.6) * 1.5) < 90) {
+                //         set_px(100 - (time * trp))
+                //     } else if (90 < Math.floor(((dis * 10) * 2.6) * 1.5) && Math.floor(((dis * 10) * 2.6) * 1.5) < 160) {
+                //         set_px(150 - (time * trp))
+                //     } else if (160 < Math.floor(((dis * 10) * 2.6) * 1.5) && Math.floor(((dis * 10) * 2.6) * 1.5) < 250) {
+                //         set_px(190 - (time * trp))
+                //     }
+                // }
+                // if (fully_width < Allowed_size) {
+                //     if (v === null) {
+                //         console.log('Mobile System');
+                //         console.log(`loaded width : ${fully_width}`);
+                //         v = true
+                //     }
+                //     if (dis * 10 < 15) {
+                //         set_Distance("Nan");
+                //     } else {
+                //         set_Distance(Math.floor(((dis * 10) * 1.5)));
+                //     }
+                if (0 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 90) {
+                    set_px(100 - (time * trp))
+                } else if (90 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 160) {
+                    set_px(150 - (time * trp))
+                } else if (160 < Math.floor(((dis * 10) * 2.6)) && Math.floor(((dis * 10) * 2.6)) < 250) {
+                    set_px(190 - (time * trp))
+                    // }
+                    // }
+                    // }
                 }
             } else {
                 v = true
@@ -412,9 +413,8 @@ function App() {
 
     const LoadModel = async () => {
         if (route === 0) {
-
             route = 1
-            const Model_Face = await model_face.load()
+            await loadHaarFaceModels();
             console.log('Face Model Loaded')
             const Model = await tf.loadGraphModel(URL);
             console.log("Model Loaded");
@@ -423,17 +423,15 @@ function App() {
             // const Model = null
             // const Model_Face = null
             setInterval(() => {
-                Detection(Model_Face, Model)
-
+                // Detection(Model_Face, Model)
+                Detection(Model)
             }, 100);
         }
     }
 
     const exam = (side) => {
-
         let True = 0;
         let False = 0;
-
         let start = Date.now();
         setInterval(() => {
             if (gg !== null && v !== null && end !== true) {
