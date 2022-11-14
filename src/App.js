@@ -331,6 +331,7 @@ function App() {
     let totalTimes = 0;
     let gg = null;
     let start_dis = 170;
+    let ISL = true;
     let focal_distance;
     let ww = window.innerWidth;
     let [isLeft, setIsLeft] = useState(true);
@@ -367,6 +368,18 @@ function App() {
 
                     if (scores_data[i].toFixed(2) > 0.4) {
                         output = await classes.dataSync()[0, i]
+                        if (ISL === false) {
+                            if (output == 1) {
+                                output = 2;
+                                console.log('changing : ', classes_name[output])
+                            } else {
+                                if (output == 2) {
+
+                                    output = 1;
+                                    console.log('changing : ', classes_name[output])
+                                }
+                            }
+                        }
 
                         // console.log(classes_name[output])
                     }
@@ -376,7 +389,7 @@ function App() {
                 tf.dispose(boxes_data)
                 tf.dispose(scores_data)
                 tf.dispose(classes_data)
-                tf.dispose(output)
+                // tf.dispose(output)
                 tf.dispose(valid_data)
                 tf.dispose(boxes)
                 tf.dispose(scores)
@@ -491,29 +504,34 @@ function App() {
                 }
                 totalTimes = False + True
                 // console.log(totalTimes)
-                if (totalTimes===5){
+                if (totalTimes === 5) {
                     setIsLeft(false)
-                    classes_name = ['bottom', 'left', 'right', 'top']
+                    ISL = false
                 }
-                if (totalTimes===10){
+                if (totalTimes === 10) {
                     setIsLeft(true)
-                    classes_name = ['bottom', 'right', 'left', 'top']
+                    ISL = true
                 }
-                if (totalTimes===15){
+                if (totalTimes === 15) {
                     setIsLeft(false)
-                    classes_name = ['bottom', 'left', 'right', 'top']
+                    ISL = false
+                    // classes_name = ['bottom', 'left', 'right', 'top']
                 }
-                if (totalTimes===20){
+                if (totalTimes === 20) {
                     setIsLeft(true)
-                    classes_name = ['bottom', 'right', 'left', 'top']
+                    ISL = true
+                    // classes_name = ['bottom', 'right', 'left', 'top']
                 }
-                if (totalTimes===25){
+                if (totalTimes === 25) {
                     setIsLeft(false)
-                    classes_name = ['bottom', 'left', 'right', 'top']
+                    ISL = false
+                    // classes_name = ['bottom', 'left', 'right', 'top']
+
                 }
-                if (totalTimes===30){
+                if (totalTimes === 30) {
                     setIsLeft(true)
-                    classes_name = ['bottom', 'right', 'left', 'top']
+                    ISL = true
+                    // classes_name = ['bottom', 'right', 'left', 'top']
                 }
             }
         }, 3000)
@@ -535,12 +553,7 @@ function App() {
             {Step === 1 && <Page1 step={Step} setStep={setStep}/>}
             {Step === 2 && <Page2 step={Step} setStep={setStep} setAge={setAge} age={age}/>}
             {Step === 3 && <Page3 step={Step} setStep={setStep}/>}
-            {/*{Step === 4 && <Page4 step={Step} setStep={setStep}/>}*/}
-            {/*{Step === 5 && <Page5 step={Step} setStep={setStep}/>}*/}
-            {/*{Step === 6 && <Page6 step={Step} setStep={setStep}/>}*/}
-            {/*{Step === 7 && <Page7 step={Step} setStep={setStep}/>}*/}
-            {/*{Step === 8 && <Page8 step={Step} setStep={setStep}/>}*/}
-            {/*{Step === 9 && <Page9 step={Step} setStep={setStep}/>}*/}
+
             {(loading === true && Step > 3) && <div className='loading'>
                 <p>
                     LOADING MODEL FROM SERVER...
