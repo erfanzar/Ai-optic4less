@@ -1,9 +1,16 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {BrowserView, MobileView, isBrowser, isMobile} from 'react-device-detect';
 import './App.css';
 
 
+export const Page = (props) => {
+    props.setStep(1);
+    return null
+}
+
+
 export const Page0 = (props) => {
+
     return (
         <div style={{
             width: '100%',
@@ -58,6 +65,7 @@ export const Page0 = (props) => {
 
 
 export const Page1 = (props) => {
+
     return (
         <div style={{
             width: '100%',
@@ -95,7 +103,7 @@ export const Page1 = (props) => {
                     alignItems: 'center',
                     height: '80px',
                     width: '200px',
-                    margin:'20px 10px',
+                    margin: '20px 10px',
                     display: 'flex',
                     justifyContent: 'center',
                     backgroundColor: 'black'
@@ -113,7 +121,7 @@ export const Page1 = (props) => {
                 }} style={{
                     alignSelf: 'center',
                     alignItems: 'center',
-                    margin:'20px 10px',
+                    margin: '20px 10px',
                     height: '80px',
                     width: '200px',
                     display: 'flex',
@@ -161,9 +169,10 @@ export const Page2 = (props) => {
                 alignItems: 'center',
                 justifyContent: 'center'
             }}>
-                <input type="range" min="1" max="100" value={props.age} className="slider" id="myRange" onChange={(e) => {
-                    props.setAge(e.target.value)
-                }}></input>
+                <input type="range" min="1" max="100" value={props.age} className="slider" id="myRange"
+                       onChange={(e) => {
+                           props.setAge(e.target.value)
+                       }}></input>
             </div>
 
             <div style={{
@@ -202,6 +211,7 @@ export const Page2 = (props) => {
 
 
 export const Page3 = (props) => {
+
     return (
         <div style={{
             width: '100%',
@@ -227,7 +237,7 @@ export const Page3 = (props) => {
             <p style={{
                 fontSize: '20px'
             }}>
-                FROM THE CAMERA AND DISPLAY FOR 1.7 M
+                FROM THE CAMERA AND DISPLAY FOR 1.5 M
             </p>
             <p style={{
                 fontSize: '20px'

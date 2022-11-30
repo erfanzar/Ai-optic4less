@@ -2,15 +2,37 @@ import React, {useEffect, useRef, useState} from 'react';
 import './App.css';
 import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
-// import * as cv from '@techstark/opencv-js'
-import {BrowserView, MobileView, isBrowser, isMobile} from 'react-device-detect';
+import {isMobile} from 'react-device-detect';
 import {fl, df} from './utils'
-import {Page0, Page1, Page2, Page3} from "./PreShowPage";
-// import * as tfn from "@tensorflow/tfjs-node";
+import {Intrep} from './funcs';
+import {Page, Page0, Page1, Page2, Page3} from "./PreShowPage";
 import * as model_face from '@tensorflow-models/blazeface'
 
 let v = null;
-const images = ['BottomSide.jpg',
+const welcomeVoice = '/assets/voice/welcome_uk_female.mp3';
+const selectAge = '/assets/voice/select_your_age_uk_female.mp3';
+const selectGender = '/assets/voice/male_or_female_uk_female.mp3';
+const modelLoaded = '/assets/voice/model_loaded_uk_female.mp3';
+const findingFace = '/assets/voice/finding_face_uk_female.mp3';
+const coverLeftEye = '/assets/voice/cover_left_eye_uk_female.mp3';
+const coverRightEye = '/assets/voice/cover_right_eye_uk_female.mp3';
+
+let known_distance = null
+let known_width = null
+let ref_image_face_width = null
+
+if (isMobile) {
+    known_distance = 44.5
+    known_width = 18
+    ref_image_face_width = 217
+} else {
+    known_distance = 44.5
+    known_width = 18
+    ref_image_face_width = 300
+}
+
+const images = [
+    'BottomSide.jpg',
     'LeftSide.jpg',
     'RightSide.jpg',
     'TopSide.jpg',
@@ -93,8 +115,8 @@ const ImageShow = (onShow, index, px) => {
 }
 
 
-const TestShow = (ac, af, px) => {
-    const total = ac + af
+const TestShow = (ac, af, px, total) => {
+
     // console.log(ac + af)
     let font = 20
     if (v === true) {
@@ -283,30 +305,27 @@ const TestShow = (ac, af, px) => {
     }
 }
 
-const Intrep = (x, xf, yf) => {
-    const xv = xf[1] - xf[0]
-    const xy = x - xf[0]
-    const yv = yf[1] - yf[0]
-    const xx = xy / xv
-    return (xx * yv) + yf[0]
-
-}
-
-
-const known_distance = 53.5
-const known_width = 26
-const ref_image_face_width = 290
-
+let have_played = [
+    false, false, false, false
+]
 
 function App() {
-
+    let songLeftEye = new Audio(coverLeftEye)
+    let songRightEye = new Audio(coverRightEye)
 
     const webcamRef = useRef(null);
+
+    const url_voice = [
+        '/assets/voice/welcome_uk_female.mp3',
+        '/assets/voice/male_or_female_uk_female.mp3',
+        '/assets/voice/select_your_age_uk_female.mp3',
+        '/assets/voice/model_loaded_uk_female.mp3'
+    ]
 
     const [loading, set_loading] = useState(true);
     const [test_end, set_test_end] = useState(false)
     const [ts, setTs] = useState([0, 0, 0])
-    const [show, set_show] = useState(null)
+    const [totalTimesPassed, setTotalTimesPassed] = useState(0)
     const [TRue, set_TRue] = useState(0)
     const [FAlse, set_FAlse] = useState(0)
     const [distance, set_Distance] = useState(null)
@@ -322,7 +341,6 @@ function App() {
     const time_test_run = 5000;
     const URL = 'https://ai.optics4less.com/Model/Old/model.json'
     let classes_name = ['bottom', 'left', 'right', 'top']
-
     let end = false;
     let output;
     let None_Change = 0;
@@ -330,7 +348,7 @@ function App() {
     let total = [0, 0, 0];
     let totalTimes = 0;
     let gg = null;
-    let start_dis = 170;
+    let start_dis = 150;
     let ISL = true;
     let focal_distance;
     let ww = window.innerWidth;
@@ -340,22 +358,17 @@ function App() {
     let p_false = 2
     focal_distance = fl(known_distance, known_width, ref_image_face_width);
     const Detection = async (Model_Face, Model) => {
-        // const Detection = async (Model) => {
+
         if (typeof webcamRef.current !== "undefined" && webcamRef.current !== null && typeof webcamRef.current.video !== "undefined" && gg !== null && end !== true) {
             const video = webcamRef.current.video
             const VideoWeight = webcamRef.current.video.videoWidth;
             webcamRef.current.video.height = webcamRef.current.video.videoHeight;
             webcamRef.current.video.width = VideoWeight;
             if (Model !== null) {
-                // const x = tf.image.resizeBilinear(tf.browser.fromPixels(video), [640, 640])
-                //     .div(255.0).expandDims(0).reshape([1, 3, 640, 640]);
-                // const pred = Model.execute(x)
-
                 const x = tf.image.resizeBilinear(tf.browser.fromPixels(video), [640, 640])
                     .div(255.0).expandDims(0).reshape([1, 640, 640, 3]);
                 const pred = await Model.executeAsync(x)
 
-                // console.log(pred)
                 const [boxes, scores, classes, valid] = pred
 
                 const boxes_data = boxes.dataSync();
@@ -366,22 +379,20 @@ function App() {
                 for (i = 0; i < valid_data; i++) {
 
 
-                    if (scores_data[i].toFixed(2) > 0.4) {
-                        output = await classes.dataSync()[0, i]
+                    if (scores_data[i].toFixed(2) > 0.6) {
+                        output = await classes.dataSync()[0 , i]
                         if (ISL === false) {
-                            if (output == 1) {
+                            if (output === 1) {
                                 output = 2;
                                 console.log('changing : ', classes_name[output])
                             } else {
-                                if (output == 2) {
-
+                                if (output === 2) {
                                     output = 1;
                                     console.log('changing : ', classes_name[output])
                                 }
                             }
                         }
-
-                        // console.log(classes_name[output])
+                        console.log(classes_name[output])
                     }
                 }
 
@@ -389,7 +400,6 @@ function App() {
                 tf.dispose(boxes_data)
                 tf.dispose(scores_data)
                 tf.dispose(classes_data)
-                // tf.dispose(output)
                 tf.dispose(valid_data)
                 tf.dispose(boxes)
                 tf.dispose(scores)
@@ -404,7 +414,7 @@ function App() {
                     const start = predict_face[0].topLeft;
                     const end = predict_face[0].bottomRight;
                     let width_f = end[0] - start[0]
-                    // console.log(width_f)
+
                     if (width_f !== null) {
 
                         let dis = df(focal_distance, known_width, width_f)
@@ -432,65 +442,104 @@ function App() {
     const LoadModel = async () => {
         if (route === 0) {
             route = 1
-            // const Model_Face = await model_face.load();
-
+            const Model_Face = await model_face.load();
+            // const Model_Face = null
             console.log('Face Model Loaded')
-            const Model = await tf.loadGraphModel(URL);
+            // const Model = await tf.loadGraphModel(URL);
+            const Model = null
             console.log("Model Loaded");
             set_loading(false)
             gg = true
-            // const Model = null
-            const Model_Face = null
+
+
             setInterval(() => {
                 Detection(Model_Face, Model)
-
-            }, 100);
+            }, 1000);
         }
     }
 
 
-    const exam = (side) => {
+    const exam = () => {
         let True = 0;
         let False = 0;
+        let start = Date.now();
 
+
+        let side;
+
+        let img = images[time]
+        if (img === 'BottomSide.jpg') {
+            side = 0;
+        }
+        if (img === 'LeftSide.jpg') {
+            side = 1;
+        }
+        if (img === 'RightSide.jpg') {
+            side = 2;
+        }
+        if (img === 'TopSide.jpg') {
+            side = 3;
+        }
         setInterval(() => {
-            let start = Date.now();
+            if (time === 0) {
+                setTimeout(() => {
+                }, 4000)
+            }
             if (gg !== null && v !== null && end !== true) {
-                if (side === output) {
-                    True += 1
-                    // console.log(side)
-                    if (side === 3 || side > 3) {
-                        side = 0
-                    } else {
-                        side += 1
-                    }
-                    time += 1
-                    if (False >= p_false) {
-                        allowed_false += 1
-                        p_false -= 1
-                    }
-                    set_show(side)
-                } else {
-                    let current = Date.now()
-                    setInterval(() => {
-                        current = Date.now()
-                    }, 1)
-                    if (current - start >= time_test_run) {
+
+                let current = Date.now()
+                setInterval(() => {
+                    console.log(side, output)
+                    current = Date.now()
+                    if (side === output) {
                         start = Date.now();
-
-                        False += 1
+                        True += 1
                         time += 1
-                        current = Date.now()
-                        // console.log(side)
-                        if (side === 3 || side > 3) {
-                            side = 0
-                        } else {
-                            side += 1
+                        output = null
+                        if (False >= p_false) {
+                            allowed_false += 1
+                            p_false -= 1
                         }
-
-                        set_show(side)
+                        img = images[time]
+                        if (img === 'BottomSide.jpg') {
+                            side = 0;
+                        }
+                        if (img === 'LeftSide.jpg') {
+                            side = 1;
+                        }
+                        if (img === 'RightSide.jpg') {
+                            side = 2;
+                        }
+                        if (img === 'TopSide.jpg') {
+                            side = 3;
+                        }
+                        setTotalTimesPassed(time)
+                    } else {
+                        if (current - start >= time_test_run) {
+                            start = Date.now();
+                            False += 1
+                            time += 1
+                            current = Date.now()
+                            img = images[time]
+                            if (img === 'BottomSide.jpg') {
+                                side = 0;
+                            }
+                            if (img === 'LeftSide.jpg') {
+                                side = 1;
+                            }
+                            if (img === 'RightSide.jpg') {
+                                side = 2;
+                            }
+                            if (img === 'TopSide.jpg') {
+                                side = 3;
+                            }
+                            output = null
+                            setTotalTimesPassed(time)
+                        }
                     }
-                }
+                }, 500)
+
+
                 total = [True, False - 1]
                 setTs([True, False - 1])
                 set_FAlse(False)
@@ -499,39 +548,44 @@ function App() {
                     set_test_end(true)
                     end = true
                 }
-                if (1 > 2) {
-                    // console.log(total)
-                }
                 totalTimes = False + True
-                // console.log(totalTimes)
+                if (totalTimes <= 0) {
+                    songLeftEye.play().then()
+                }
+
                 if (totalTimes === 5) {
                     setIsLeft(false)
                     ISL = false
+                    songRightEye.play().then()
                 }
                 if (totalTimes === 10) {
                     setIsLeft(true)
                     ISL = true
+                    songLeftEye.play().then()
                 }
                 if (totalTimes === 15) {
                     setIsLeft(false)
                     ISL = false
-                    // classes_name = ['bottom', 'left', 'right', 'top']
+                    songRightEye.play().then()
+
                 }
                 if (totalTimes === 20) {
                     setIsLeft(true)
                     ISL = true
-                    // classes_name = ['bottom', 'right', 'left', 'top']
+                    songLeftEye.play().then()
+
                 }
                 if (totalTimes === 25) {
                     setIsLeft(false)
                     ISL = false
-                    // classes_name = ['bottom', 'left', 'right', 'top']
+                    songRightEye.play().then()
 
                 }
                 if (totalTimes === 30) {
                     setIsLeft(true)
                     ISL = true
-                    // classes_name = ['bottom', 'right', 'left', 'top']
+                    songLeftEye.play().then()
+
                 }
             }
         }, 3000)
@@ -540,19 +594,80 @@ function App() {
 
     useEffect(() => {
         if (route === 0) {
-            let side = 0
-            set_show(side)
-            LoadModel()
-            exam(side)
+
+
+            LoadModel().then(r => {
+            })
+            exam()
         }
     }, [None_Change])
+    const findingFaceVoice = () => {
+        console.log('ran')
+        let song = new Audio(findingFace)
+        song.play().then()
+    }
 
+    class playVoice {
+        constructor(voice, check) {
+            this.voice = voice
+            this.check = check
+            this.song = new Audio(voice)
+        }
 
+        run() {
+            if (this.check === 0) {
+                have_played = [
+                    true, false, false, false
+                ]
+                console.log('changed', 0)
+            }
+            if (this.check === 1) {
+                have_played = [
+                    true, true, false, false
+                ]
+                console.log('changed', 1)
+            }
+            if (this.check === 2) {
+                have_played = [
+                    true, true, true, false
+                ]
+                console.log('changed', 2)
+            }
+            if (this.check === 3) {
+                have_played = [
+                    true, true, true, true
+                ]
+                console.log('changed', 3)
+            }
+            this.song.play().then()
+        }
+
+        pause() {
+            // console.log('pause', this.check)
+            this.song.pause()
+
+        }
+
+    }
+
+    let voice0 = new playVoice(url_voice[0], 0)
+    let voice1 = new playVoice(url_voice[1], 1)
+    let voice2 = new playVoice(url_voice[2], 2)
+    let voice3 = new playVoice(url_voice[3], 3)
     return (<div>
+
             {Step === 0 && <Page0 step={Step} setStep={setStep}/>}
+            {(Step === 0 && have_played[0] === false) ? voice0.run() : voice0.pause()}
             {Step === 1 && <Page1 step={Step} setStep={setStep}/>}
+            {/*{Step !== 0 && voice0.song.pause()}*/}
+            {/*{Step !== 1 && voice1.song.pause()}*/}
+            {/*{Step !== 2 && voice2.song.pause()}*/}
+            {/*{Step !== 3 && voice3.song.pause()}*/}
+            {(Step === 1 && have_played[1] === false) ? voice1.run() : voice1.pause()}
             {Step === 2 && <Page2 step={Step} setStep={setStep} setAge={setAge} age={age}/>}
+            {(Step === 2 && have_played[2] === false) ? voice2.run() : voice2.pause()}
             {Step === 3 && <Page3 step={Step} setStep={setStep}/>}
+            {(Step === 3 && have_played[3] === false) ? voice3.run() : voice3.pause()}
 
             {(loading === true && Step > 3) && <div className='loading'>
                 <p>
@@ -568,9 +683,9 @@ function App() {
                 {v === true && <div className='result'>
 
                     <p className='result1'>TRUE : {TRue}</p>
-                    {isLeft ? <p className='result3'>EYE : LEFT </p> : <p className='result3'>EYE : RIGHT </p>}
+                    {isLeft ? <p className='result3'>EYE : RIGHT </p> : <p className='result3'>EYE : LEFT </p>}
                     <p className='result2'>FALSE : {FAlse}</p>
-                    {/*<p className='result3'>Distance : {distance} Cm </p>*/}
+
                 </div>
                 }
                 {v !== true && <div style={{alignContent: 'center'}}>
@@ -585,13 +700,14 @@ function App() {
             {distance} CM | {start_dis} CM Require to Start
                 </span> : <span>
                 FACE MODEL TRYING TO LOAD...
+                                    {findingFaceVoice()}
                 </span>}
                             </div>
                         </div>
                     </>
                 </div>}
                 {v === true && <div className='ImageCorner'>
-                    {TestShow(TRue, FAlse, Intrep(px, [80, 350], [100, start_dis]))}
+                    {TestShow(TRue, FAlse, Intrep(px, [80, 350], [100, start_dis]), totalTimesPassed)}
                 </div>}
 
                 <Webcam
