@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {BrowserView, MobileView, isBrowser, isMobile} from 'react-device-detect';
+import { useEffect, useState } from "react";
+import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 import './App.css';
 
 
@@ -50,7 +50,8 @@ export const Page0 = (props) => {
                 width: '200px',
                 display: 'flex',
                 justifyContent: 'center',
-                backgroundColor: 'black'
+                backgroundColor: 'black',
+                cursor: 'pointer'
             }}>
                 <p style={{
                     alignItems: 'center',
@@ -106,7 +107,8 @@ export const Page1 = (props) => {
                     margin: '20px 10px',
                     display: 'flex',
                     justifyContent: 'center',
-                    backgroundColor: 'black'
+                    backgroundColor: 'black',
+                    cursor: 'pointer'
                 }}>
                     <p style={{
                         alignItems: 'center',
@@ -126,7 +128,8 @@ export const Page1 = (props) => {
                     width: '200px',
                     display: 'flex',
                     justifyContent: 'center',
-                    backgroundColor: 'black'
+                    backgroundColor: 'black',
+                    cursor: 'pointer'
                 }}>
                     <p style={{
                         alignItems: 'center',
@@ -169,10 +172,20 @@ export const Page2 = (props) => {
                 alignItems: 'center',
                 justifyContent: 'center'
             }}>
-                <input type="range" min="1" max="100" value={props.age} className="slider" id="myRange"
-                       onChange={(e) => {
-                           props.setAge(e.target.value)
-                       }}></input>
+                <div className="slider-keeper">
+                    <input type="range" min="1" max="100" value={props.age} className="slider" id="myRange"
+                        onChange={(e) => {
+                            props.setAge(e.target.value)
+                        }} />
+                    <div className="slider-num">
+                        {new Array(100).fill('').map((item, index) =>
+                            <div className="slider-num-keeper">
+                                <span className={`slider-num-item ${[0, 25, 50, 75].indexOf(index) != -1 && 'slider-num-item-active'}`}></span>
+                                <span className={`${[0, 25, 50, 75].indexOf(index) != -1 && 'slider-num-span-active'}`} >{[0,25, 50, 75].indexOf(index) != -1 && index} </span>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
 
             <div style={{
@@ -196,7 +209,8 @@ export const Page2 = (props) => {
                 width: '200px',
                 display: 'flex',
                 justifyContent: 'center',
-                backgroundColor: 'black'
+                backgroundColor: 'black',
+                cursor: 'pointer'
             }}>
                 <p style={{
                     alignItems: 'center',
@@ -211,7 +225,6 @@ export const Page2 = (props) => {
 
 
 export const Page3 = (props) => {
-
     return (
         <div style={{
             width: '100%',
@@ -256,7 +269,8 @@ export const Page3 = (props) => {
                 width: '200px',
                 display: 'flex',
                 justifyContent: 'center',
-                backgroundColor: 'black'
+                backgroundColor: 'black',
+                cursor: 'pointer'
             }}>
                 <p style={{
                     alignItems: 'center',

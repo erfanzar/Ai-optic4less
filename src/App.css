@@ -87,44 +87,7 @@ body {
     width: 100%; /* Width of the outside container */
 }
 
-/* The slider itself */
-.slider {
-    -webkit-appearance: none;  /* Override default CSS styles */
-    appearance: none;
-    align-self: center;
-    width: 60%; /* Full-width */
-    height: 25px; /* Specified height */
-    background: #d3d3d3; /* Grey background */
-    outline: none; /* Remove outline */
-    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-    transition: opacity .2s;
-}
 
-/* Mouse-over effects */
-.slider:hover {
-    opacity: 1; /* Fully shown on mouse-over */
-}
-
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-.slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
-    appearance: none;
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    transition: all 0.4s;
-    background: black; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-}
-
-.slider::-moz-range-thumb {
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    transition: all 0.4s;
-    border-radius: 30px;
-    background: black; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-}
 
 .loading {
     justify-content: center;
@@ -279,3 +242,130 @@ p {
         transform: rotate(360deg);
     }
 }
+
+
+
+/* Style By Ehsan */
+
+.progress-bar {
+    width: 70%;
+    height: 20px;
+    border: 2px solid #000;
+    margin-top: 80px;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+}
+
+.progress-bar-inner {
+    height: 18px;
+    background: #000;
+    transition: all 0.3s;
+}
+
+/* The slider itself */
+
+.slider-keeper {
+    width: 60%;
+    position: relative;
+}
+
+.slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    align-self: center;
+    width: 100%; /* Full-width */
+    height: 25px; /* Specified height */
+    border-bottom:2px solid #000 ; /* Grey background */
+    outline: none; /* Remove outline */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+    position: relative;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    margin-top: 95px; 
+    background-color: #000;
+    height: 2rem;
+    width: 1rem;   
+    -webkit-clip-path: polygon(50% 0, 100% 50%, 100% 100%, 0 100%, 0% 50%); 
+    clip-path: polygon(50% 0, 100% 50%, 100% 100%, 0 100%, 0% 50%);
+    cursor: pointer;
+    z-index: 1000;
+ }
+
+ .slider::-moz-range-thumb {
+    border: none; /*Removes extra border that FF applies*/
+    border-radius: 0; /*Removes default border-radius that FF applies*/
+    background-color: #000;
+    height: 2rem;
+    width: 1rem;
+    margin-top: 75px; 
+    -webkit-clip-path: polygon(50% 0, 100% 50%, 100% 100%, 0 100%, 0% 50%); 
+    clip-path: polygon(50% 0, 100% 50%, 100% 100%, 0 100%, 0% 50%);
+    cursor: pointer;
+    z-index: 1000;
+
+
+}
+
+.slider::after {
+    width: 2px;
+    background: #000;
+    height: 25px;
+    position: absolute;
+    content: "";
+    margin-top: 13px;
+}
+
+.slider::before {
+    width: 2px;
+    background: #000;
+    height: 25px;
+    position: absolute;
+    content: "";
+    margin-top: 13px;
+    right: 0;
+}
+
+.slider-num {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-top: -4px;
+    justify-content: space-between;
+    overflow: hidden;
+    margin-left: 2px;
+}
+
+.slider-num-keeper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: -10px;
+
+}
+
+.slider-num-item {
+    width: 1px;
+    height: 4px;
+    background: #000;
+ 
+}
+
+.slider-num-item-active {
+    height: 8px;
+    width: 2px;
+    margin-top: 9px;
+
+}
+
+.slider-num-span-active {
+    margin-top: 5px;
+}
+
+

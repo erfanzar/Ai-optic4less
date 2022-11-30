@@ -1,12 +1,13 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
-import {isMobile} from 'react-device-detect';
-import {fl, df} from './utils'
-import {Intrep} from './funcs';
-import {Page, Page0, Page1, Page2, Page3} from "./PreShowPage";
+import { isMobile } from 'react-device-detect';
+import { fl, df } from './utils'
+import { Intrep } from './funcs';
+import { Page, Page0, Page1, Page2, Page3 } from "./PreShowPage";
 import * as model_face from '@tensorflow-models/blazeface'
+import { step } from '@tensorflow/tfjs';
 
 let v = null;
 const welcomeVoice = '/assets/voice/welcome_uk_female.mp3';
@@ -17,6 +18,7 @@ const findingFace = '/assets/voice/finding_face_uk_female.mp3';
 const coverLeftEye = '/assets/voice/cover_left_eye_uk_female.mp3';
 const coverRightEye = '/assets/voice/cover_right_eye_uk_female.mp3';
 
+let prsc_l = 1
 let known_distance = null
 let known_width = null
 let ref_image_face_width = null
@@ -89,11 +91,11 @@ const ImageShow = (onShow, index, px) => {
                 display: 'flex'
             }}
         ><img className='Side'
-              src={`/assets/images/${images[index]}`}
-              style={{
-                  height: `${px}px`, width: `${px}px`, margin: '20px'
-              }}
-        /></div>)
+            src={`/assets/images/${images[index]}`}
+            style={{
+                height: `${px}px`, width: `${px}px`, margin: '20px'
+            }}
+            /></div>)
     } else {
         return (<div
             style={{
@@ -106,11 +108,11 @@ const ImageShow = (onShow, index, px) => {
                 margin: '20px', display: 'flex'
             }}
         ><img className='Side'
-              src={`/assets/images/${images[index]}`}
-              style={{
-                  height: `${px}px`, width: `${px}px`, margin: '20px'
-              }}
-        /></div>)
+            src={`/assets/images/${images[index]}`}
+            style={{
+                height: `${px}px`, width: `${px}px`, margin: '20px'
+            }}
+            /></div>)
     }
 }
 
@@ -333,6 +335,7 @@ function App() {
     const [px, set_px] = useState(null)
     const [Step, setStep] = useState(0)
     const [age, setAge] = useState(20)
+    const [percentage, setPercentage] = useState(1)
 
 
     const trp = 6;
@@ -380,7 +383,7 @@ function App() {
 
 
                     if (scores_data[i].toFixed(2) > 0.6) {
-                        output = await classes.dataSync()[0 , i]
+                        output = await classes.dataSync()[0, i]
                         if (ISL === false) {
                             if (output === 1) {
                                 output = 2;
@@ -654,90 +657,118 @@ function App() {
     let voice1 = new playVoice(url_voice[1], 1)
     let voice2 = new playVoice(url_voice[2], 2)
     let voice3 = new playVoice(url_voice[3], 3)
+
+
+    useEffect(() => {
+        if (Step > 3) {
+            const inter = setInterval(() => {
+                if (prsc_l < 99) {
+                    prsc_l += 1
+                    setPercentage(prsc_l)
+                }
+            }, 100)
+            return () => clearInterval(inter);
+        }
+    }, [Step])
+
+
+
     return (<div>
 
-            {Step === 0 && <Page0 step={Step} setStep={setStep}/>}
-            {(Step === 0 && have_played[0] === false) ? voice0.run() : voice0.pause()}
-            {Step === 1 && <Page1 step={Step} setStep={setStep}/>}
-            {/*{Step !== 0 && voice0.song.pause()}*/}
-            {/*{Step !== 1 && voice1.song.pause()}*/}
-            {/*{Step !== 2 && voice2.song.pause()}*/}
-            {/*{Step !== 3 && voice3.song.pause()}*/}
-            {(Step === 1 && have_played[1] === false) ? voice1.run() : voice1.pause()}
-            {Step === 2 && <Page2 step={Step} setStep={setStep} setAge={setAge} age={age}/>}
-            {(Step === 2 && have_played[2] === false) ? voice2.run() : voice2.pause()}
-            {Step === 3 && <Page3 step={Step} setStep={setStep}/>}
-            {(Step === 3 && have_played[3] === false) ? voice3.run() : voice3.pause()}
+        {Step === 0 && <Page0 step={Step} setStep={setStep} />}
+        {(Step === 0 && have_played[0] === false) ? voice0.run() : voice0.pause()}
+        {Step === 1 && <Page1 step={Step} setStep={setStep} />}
 
-            {(loading === true && Step > 3) && <div className='loading'>
+        {/*{Step !== 0 && voice0.song.pause()}*/}
+        {/*{Step !== 1 && voice1.song.pause()}*/}
+        {/*{Step !== 2 && voice2.song.pause()}*/}
+        {/*{Step !== 3 && voice3.song.pause()}*/}
+
+        {(Step === 1 && have_played[1] === false) ? voice1.run() : voice1.pause()}
+        {Step === 2 && <Page2 step={Step} setStep={setStep} setAge={setAge} age={age} />}
+        {(Step === 2 && have_played[2] === false) ? voice2.run() : voice2.pause()}
+        {Step === 3 && <Page3 step={Step} setStep={setStep} />}
+        {(Step === 3 && have_played[3] === false) ? voice3.run() : voice3.pause()}
+
+
+
+        {(loading === true && Step > 3) &&
+            <div className='loading'>
                 <p>
-                    LOADING MODEL FROM SERVER...
+                    PLEASE WAITING
                 </p>
                 <p>
-                    PLEASE BE PATIENT
+                    DOWNLOAD DATA OF TEST
                 </p>
-                <div class="loader">Loading...</div>
-            </div>}
-            {(test_end !== true && Step > 3 && loading === false) && <div className='Page'>
-
-                {v === true && <div className='result'>
-
-                    <p className='result1'>TRUE : {TRue}</p>
-                    {isLeft ? <p className='result3'>EYE : RIGHT </p> : <p className='result3'>EYE : LEFT </p>}
-                    <p className='result2'>FALSE : {FAlse}</p>
-
+                <div className='progress-bar'>
+                    <div className='progress-bar-inner' style={{ width: `${percentage}%` }}></div>
                 </div>
-                }
-                {v !== true && <div style={{alignContent: 'center'}}>
-                    <>
-                        <div style={{background: "cyan"}} className={` main-container `}>
-                            <div style={{
-                                width: Intrep(distance, [0, 130], [ww, 10]),
-                                background: Intrep(distance, [0, 130], [ww, 10]) < ww / 4 ? "#66ffb3" : 'white'
-                            }}
-                                 className={` dynamic-width-container`}>
-                                {distance !== null ? <span>
-            {distance} CM | {start_dis} CM Require to Start
-                </span> : <span>
-                FACE MODEL TRYING TO LOAD...
-                                    {findingFaceVoice()}
-                </span>}
-                            </div>
+                <h3>{percentage} %</h3>
+            </div>
+        }
+
+
+
+        {(test_end !== true && Step > 3 && loading === false) && <div className='Page'>
+
+            {v === true && <div className='result'>
+
+                <p className='result1'>TRUE : {TRue}</p>
+                {isLeft ? <p className='result3'>EYE : RIGHT </p> : <p className='result3'>EYE : LEFT </p>}
+                <p className='result2'>FALSE : {FAlse}</p>
+
+            </div>
+            }
+            {v !== true && <div style={{ alignContent: 'center' }}>
+                <>
+                    <div style={{ background: "cyan" }} className={` main-container `}>
+                        <div style={{
+                            width: Intrep(distance, [0, 130], [ww, 10]),
+                            background: Intrep(distance, [0, 130], [ww, 10]) < ww / 4 ? "#66ffb3" : 'white'
+                        }}
+                            className={` dynamic-width-container`}>
+                            {distance !== null ? <span>
+                                {distance} CM | {start_dis} CM Require to Start
+                            </span> : <span>
+                                FACE MODEL TRYING TO LOAD...
+                                {findingFaceVoice()}
+                            </span>}
                         </div>
-                    </>
-                </div>}
-                {v === true && <div className='ImageCorner'>
-                    {TestShow(TRue, FAlse, Intrep(px, [80, 350], [100, start_dis]), totalTimesPassed)}
-                </div>}
-
-                <Webcam
-                    ref={webcamRef}
-                    height={hig}
-                    width={wid}
-                    mirrored={true}
-                    className='camera'
-                    style={{
-                        height: `${isMobile ? 0 : 200}px`, width: `${isMobile ? 0 : 300}px`,
-                    }}
-                />
-
+                    </div>
+                </>
             </div>}
-            {test_end === true && <div style={{
-                height: '100vh',
-                width: '100%',
-                backgroundColor: 'black',
-                justifyContent: 'center',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center'
-            }}>
-                <p className='end_result'>Test Ended</p>
-                <p className='end_result'>TRUE : {TRue}</p>
-                <p className='end_result'>FALSE : {FAlse}</p>
-                <p className='end_result'>AGE : {age}</p>
-
+            {v === true && <div className='ImageCorner'>
+                {TestShow(TRue, FAlse, Intrep(px, [80, 350], [100, start_dis]), totalTimesPassed)}
             </div>}
-        </div>
+
+            <Webcam
+                ref={webcamRef}
+                height={hig}
+                width={wid}
+                mirrored={true}
+                className='camera'
+                style={{
+                    height: `${isMobile ? 0 : 200}px`, width: `${isMobile ? 0 : 300}px`,
+                }}
+            />
+
+        </div>}
+        {test_end === true && <div style={{
+            height: '100vh',
+            width: '100%',
+            backgroundColor: 'black',
+            justifyContent: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+        }}>
+            <p className='end_result'>Test Ended</p>
+            <p className='end_result'>TRUE : {TRue}</p>
+            <p className='end_result'>FALSE : {FAlse}</p>
+            <p className='end_result'>AGE : {age}</p>
+
+        </div>}
+    </div>
 
     )
 
