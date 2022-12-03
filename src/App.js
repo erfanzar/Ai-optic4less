@@ -5,7 +5,7 @@ import * as tf from '@tensorflow/tfjs';
 import { isMobile } from 'react-device-detect';
 import { fl, df } from './utils'
 import { Intrep } from './funcs';
-import { Page, Page0, Page1, Page2, Page3 } from "./PreShowPage";
+import { Page, Page0, Page1, Page2, Page3 , Page4 } from "./PreShowPage";
 import * as model_face from '@tensorflow-models/blazeface'
 import { step } from '@tensorflow/tfjs';
 
@@ -335,6 +335,7 @@ function App() {
     const [px, set_px] = useState(null)
     const [Step, setStep] = useState(0)
     const [age, setAge] = useState(20)
+    const [weakness, setWeakness] = useState(0)
     const [percentage, setPercentage] = useState(1)
 
 
@@ -689,6 +690,7 @@ function App() {
         {(Step === 2 && have_played[2] === false) ? voice2.run() : voice2.pause()}
         {Step === 3 && <Page3 step={Step} setStep={setStep} />}
         {(Step === 3 && have_played[3] === false) ? voice3.run() : voice3.pause()}
+        {/* {Step === 4 && <Page4 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness} />} */}
 
 
 

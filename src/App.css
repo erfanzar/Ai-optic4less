@@ -286,7 +286,7 @@ p {
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none; /* Override default look */
     appearance: none;
-    margin-top: 95px; 
+    margin-top: 105px; 
     background-color: #000;
     height: 2rem;
     width: 1rem;   
@@ -339,33 +339,153 @@ p {
     justify-content: space-between;
     overflow: hidden;
     margin-left: 2px;
-}
-
-.slider-num-keeper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: -10px;
-
+    /* background: red; */
 }
 
 .slider-num-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.slider-num-item-start {
+    align-items: flex-start;
+}
+
+.slider-num-item-end {
+    align-items: flex-end;
+}
+
+.slider-num-item-line {
     width: 1px;
     height: 4px;
     background: #000;
- 
 }
 
-.slider-num-item-active {
-    height: 8px;
+.slider-num-item-line-active {
     width: 2px;
+    height: 6px;
+}
+
+.slider-num-item-text {
+    /* font-size: 13px; */
     margin-top: 9px;
+}
+
+
+
+/* The slider zafe cheshm */
+
+.slider-zaf-keeper {
+    width: 60%;
+    position: relative;
+}
+
+.slider-zaf {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    align-self: center;
+    width: 100%; /* Full-width */
+    height: 25px; /* Specified height */
+    border-bottom:2px solid #000 ; /* Grey background */
+    outline: none; /* Remove outline */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+    position: relative;
+}
+
+.slider-zaf::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    margin-top: 105px; 
+    background-color: #000;
+    height: 2rem;
+    width: 1rem;   
+    -webkit-clip-path: polygon(50% 0, 100% 50%, 100% 100%, 0 100%, 0% 50%); 
+    clip-path: polygon(50% 0, 100% 50%, 100% 100%, 0 100%, 0% 50%);
+    cursor: pointer;
+    z-index: 1000;
+ }
+
+ .slider-zaf::-moz-range-thumb {
+    border: none; /*Removes extra border that FF applies*/
+    border-radius: 0; /*Removes default border-radius that FF applies*/
+    background-color: #000;
+    height: 2rem;
+    width: 1rem;
+    margin-top: 75px; 
+    -webkit-clip-path: polygon(50% 0, 100% 50%, 100% 100%, 0 100%, 0% 50%); 
+    clip-path: polygon(50% 0, 100% 50%, 100% 100%, 0 100%, 0% 50%);
+    cursor: pointer;
+    z-index: 1000;
+
 
 }
 
-.slider-num-span-active {
+.slider-zaf::after {
+    width: 2px;
+    background: #000;
+    height: 25px;
+    position: absolute;
+    content: "";
+    margin-top: 13px;
+}
+
+.slider-zaf::before {
+    width: 2px;
+    background: #000;
+    height: 25px;
+    position: absolute;
+    content: "";
+    margin-top: 13px;
+    right: 0;
+}
+
+.slider-zaf-num {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-top: -4px;
+    justify-content: space-between;
+    overflow: hidden;
+    margin-left: 2px;
+    /* background: red; */
+}
+
+.slider-zaf-num-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.slider-zaf-num-item-start {
+    align-items: flex-start;
+}
+
+.slider-zaf-num-item-end {
+    align-items: flex-end;
+}
+
+.slider-zaf-num-item-line {
+    width: 1px;
+    height: 4px;
+    background: #000;
+}
+
+.slider-zaf-num-item-line-active {
+    width: 2px;
+    height: 6px;
+}
+
+.slider-zaf-num-item-text {
+    /* font-size: 13px; */
+    margin-top: 9px;
+}
+
+.slider-zaf-num-item-text-small {
+    font-size: 9px;
     margin-top: 5px;
 }
-
-
