@@ -312,17 +312,11 @@ let have_played = [
 ]
 
 function App() {
+
     let songLeftEye = new Audio(coverLeftEye)
     let songRightEye = new Audio(coverRightEye)
 
     const webcamRef = useRef(null);
-
-    const url_voice = [
-        '/assets/voice/welcome_uk_female.mp3',
-        '/assets/voice/male_or_female_uk_female.mp3',
-        '/assets/voice/select_your_age_uk_female.mp3',
-        '/assets/voice/model_loaded_uk_female.mp3'
-    ]
 
     const [loading, set_loading] = useState(true);
     const [test_end, set_test_end] = useState(false)
@@ -605,59 +599,15 @@ function App() {
             exam()
         }
     }, [None_Change])
+
+
     const findingFaceVoice = () => {
         console.log('ran')
         let song = new Audio(findingFace)
         song.play().then()
     }
 
-    class playVoice {
-        constructor(voice, check) {
-            this.voice = voice
-            this.check = check
-            this.song = new Audio(voice)
-        }
-
-        run() {
-            if (this.check === 0) {
-                have_played = [
-                    true, false, false, false
-                ]
-                console.log('changed', 0)
-            }
-            if (this.check === 1) {
-                have_played = [
-                    true, true, false, false
-                ]
-                console.log('changed', 1)
-            }
-            if (this.check === 2) {
-                have_played = [
-                    true, true, true, false
-                ]
-                console.log('changed', 2)
-            }
-            if (this.check === 3) {
-                have_played = [
-                    true, true, true, true
-                ]
-                console.log('changed', 3)
-            }
-            this.song.play().then()
-        }
-
-        pause() {
-            // console.log('pause', this.check)
-            this.song.pause()
-
-        }
-
-    }
-
-    let voice0 = new playVoice(url_voice[0], 0)
-    let voice1 = new playVoice(url_voice[1], 1)
-    let voice2 = new playVoice(url_voice[2], 2)
-    let voice3 = new playVoice(url_voice[3], 3)
+ 
 
 
     useEffect(() => {
@@ -677,19 +627,9 @@ function App() {
     return (<div>
 
         {Step === 0 && <Page0 step={Step} setStep={setStep} />}
-        {(Step === 0 && have_played[0] === false) ? voice0.run() : voice0.pause()}
         {Step === 1 && <Page1 step={Step} setStep={setStep} />}
-
-        {/*{Step !== 0 && voice0.song.pause()}*/}
-        {/*{Step !== 1 && voice1.song.pause()}*/}
-        {/*{Step !== 2 && voice2.song.pause()}*/}
-        {/*{Step !== 3 && voice3.song.pause()}*/}
-
-        {(Step === 1 && have_played[1] === false) ? voice1.run() : voice1.pause()}
         {Step === 2 && <Page2 step={Step} setStep={setStep} setAge={setAge} age={age} />}
-        {(Step === 2 && have_played[2] === false) ? voice2.run() : voice2.pause()}
         {Step === 3 && <Page3 step={Step} setStep={setStep} />}
-        {(Step === 3 && have_played[3] === false) ? voice3.run() : voice3.pause()}
         {/* {Step === 4 && <Page4 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness} />} */}
 
 

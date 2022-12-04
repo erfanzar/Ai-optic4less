@@ -67,6 +67,11 @@ export const Page0 = (props) => {
 
 export const Page1 = (props) => {
 
+    useEffect(() => {
+        var audio = new Audio('/assets/voice/male_or_female_uk_female.mp3');
+        audio.play();
+    }, [])
+
     return (
         <div style={{
             width: '100%',
@@ -148,6 +153,11 @@ export const Page1 = (props) => {
 
 export const Page2 = (props) => {
 
+    useEffect(() => {
+        var audio = new Audio('/assets/voice/select_your_age_uk_female.mp3');
+        audio.play();
+    }, [])
+
     return (
         <div style={{
             width: '100%',
@@ -180,8 +190,8 @@ export const Page2 = (props) => {
                     <div className="slider-num">
                         {new Array(100).fill('').map((item, index) =>
                             <div className={`slider-num-item ${index == 99 && 'slider-num-item-end'} ${index == 0 && 'slider-num-item-start'} `}>
-                                <span className={`slider-num-item-line ${[0, 25, 50, 75 ].indexOf(index) != -1 && 'slider-num-item-line-active'}`}  />
-                                {[0, 25, 50, 75 ].indexOf(index) != -1 &&
+                                <span className={`slider-num-item-line ${[0, 25, 50, 75].indexOf(index) != -1 && 'slider-num-item-line-active'}`} />
+                                {[0, 25, 50, 75].indexOf(index) != -1 &&
                                     <span className='slider-num-item-text'>{index}</span>
                                 }
                                 {index == 99 &&
@@ -231,6 +241,13 @@ export const Page2 = (props) => {
 
 
 export const Page3 = (props) => {
+
+    useEffect(() => {
+        var audio = new Audio('/assets/voice/model_loaded_uk_female.mp3');
+        audio.play();
+    }, [])
+
+
     return (
         <div style={{
             width: '100%',
@@ -307,7 +324,7 @@ export const Page4 = (props) => {
             <p style={{
                 fontSize: '20px'
             }}>
-               sabghe zaEf cheshm
+                sabghe zaEf cheshm
             </p>
             <div style={{
                 height: '60px'
@@ -323,10 +340,10 @@ export const Page4 = (props) => {
                             props.setWeakness(e.target.value)
                         }} />
                     <div className="slider-zaf-num">
-                        {[0,0.25,0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3,3.25,3.5,3.75,4,4.25,4.5,4.75,5,5.25,5.5,5.75,6,6.25,6.5,6.75,7,7.25,7.5,7.75,8,8.25,8.5,8.75,9,9.25,9.5,9.75,10].map((item, index) =>
+                        {[0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 7.75, 8, 8.25, 8.5, 8.75, 9, 9.25, 9.5, 9.75, 10].map((item, index) =>
                             <div className={`slider-zaf-num-item ${item == 10 && 'slider-zaf-num-item-end'} ${item == 0 && 'slider-zaf-num-item-start'} `}>
-                                <span className={`slider-zaf-num-item-line ${[0, 5,10 ].indexOf(item) != -1 && 'slider-zaf-num-item-line-active'}`}  />
-                                {[0, 5 , 10 ].indexOf(item) != -1 ?
+                                <span className={`slider-zaf-num-item-line ${[0, 5, 10].indexOf(item) != -1 && 'slider-zaf-num-item-line-active'}`} />
+                                {[0, 5, 10].indexOf(item) != -1 ?
                                     <span className='slider-zaf-num-item-text'>{item}</span>
                                     :
                                     <span className='slider-zaf-num-item-text-small'>{item}</span>
