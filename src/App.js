@@ -1,15 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import './App.css';
 import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
-import { isMobile } from 'react-device-detect';
-import { fl, df } from './utils'
-import { Intrep } from './funcs';
-import { Page, Page0, Page1, Page2, Page3 , Page4 } from "./PreShowPage";
+import {isMobile} from 'react-device-detect';
+import {fl, df} from './utils'
+import {Intrep} from './funcs';
+import {Page, Page0, Page1, Page2, Page3, Page4} from "./PreShowPage";
 import * as model_face from '@tensorflow-models/blazeface'
-import { step } from '@tensorflow/tfjs';
+import {step} from '@tensorflow/tfjs';
 
 let v = null;
+let setST = false;
 const welcomeVoice = '/assets/voice/welcome_uk_female.mp3';
 const selectAge = '/assets/voice/select_your_age_uk_female.mp3';
 const selectGender = '/assets/voice/male_or_female_uk_female.mp3';
@@ -91,11 +92,11 @@ const ImageShow = (onShow, index, px) => {
                 display: 'flex'
             }}
         ><img className='Side'
-            src={`/assets/images/${images[index]}`}
-            style={{
-                height: `${px}px`, width: `${px}px`, margin: '20px'
-            }}
-            /></div>)
+              src={`/assets/images/${images[index]}`}
+              style={{
+                  height: `${px}px`, width: `${px}px`, margin: '20px'
+              }}
+        /></div>)
     } else {
         return (<div
             style={{
@@ -108,11 +109,11 @@ const ImageShow = (onShow, index, px) => {
                 margin: '20px', display: 'flex'
             }}
         ><img className='Side'
-            src={`/assets/images/${images[index]}`}
-            style={{
-                height: `${px}px`, width: `${px}px`, margin: '20px'
-            }}
-            /></div>)
+              src={`/assets/images/${images[index]}`}
+              style={{
+                  height: `${px}px`, width: `${px}px`, margin: '20px'
+              }}
+        /></div>)
     }
 }
 
@@ -120,6 +121,7 @@ const ImageShow = (onShow, index, px) => {
 const TestShow = (ac, af, px, total) => {
 
     // console.log(ac + af)
+    setST = true
     let font = 20
     if (v === true) {
         if (total <= 0) {
@@ -352,7 +354,7 @@ function App() {
     let total = [0, 0, 0];
     let totalTimes = 0;
     let gg = null;
-    let start_dis = 150;
+    let start_dis = 50;
     let ISL = true;
     let focal_distance;
     let ww = window.innerWidth;
@@ -381,9 +383,7 @@ function App() {
                 const valid_data = valid.dataSync()[0];
                 let i;
                 for (i = 0; i < valid_data; i++) {
-
-
-                    if (scores_data[i].toFixed(2) > 0.6) {
+                    if (scores_data[i].toFixed(2) > 0.5) {
                         output = await classes.dataSync()[0, i]
                         if (ISL === false) {
                             if (output === 1) {
@@ -484,46 +484,27 @@ function App() {
         if (img === 'TopSide.jpg') {
             side = 3;
         }
-        setInterval(() => {
-            if (time === 0) {
-                setTimeout(() => {
-                }, 4000)
-            }
-            if (gg !== null && v !== null && end !== true) {
+        setTimeout(() => {
+            setInterval(() => {
+                if (time === 0) {
+                    setTimeout(() => {
+                    }, 4000)
+                }
+                if (gg !== null && v !== null && end !== true) {
 
-                let current = Date.now()
-                setInterval(() => {
-                    console.log(side, output)
-                    current = Date.now()
-                    if (side === output) {
-                        start = Date.now();
-                        True += 1
-                        time += 1
-                        output = null
-                        if (False >= p_false) {
-                            allowed_false += 1
-                            p_false -= 1
-                        }
-                        img = images[time]
-                        if (img === 'BottomSide.jpg') {
-                            side = 0;
-                        }
-                        if (img === 'LeftSide.jpg') {
-                            side = 1;
-                        }
-                        if (img === 'RightSide.jpg') {
-                            side = 2;
-                        }
-                        if (img === 'TopSide.jpg') {
-                            side = 3;
-                        }
-                        setTotalTimesPassed(time)
-                    } else {
-                        if (current - start >= time_test_run) {
+                    let current = Date.now()
+                    setInterval(() => {
+                        console.log(side, output)
+                        current = Date.now()
+                        if (side === output) {
                             start = Date.now();
-                            False += 1
+                            True += 1
                             time += 1
-                            current = Date.now()
+                            // output = null
+                            if (False >= p_false) {
+                                allowed_false += 1
+                                p_false -= 1
+                            }
                             img = images[time]
                             if (img === 'BottomSide.jpg') {
                                 side = 0;
@@ -537,78 +518,110 @@ function App() {
                             if (img === 'TopSide.jpg') {
                                 side = 3;
                             }
-                            output = null
                             setTotalTimesPassed(time)
+                        } else {
+                            if (current - start >= time_test_run) {
+                                start = Date.now();
+                                False += 1
+                                time += 1
+                                current = Date.now()
+                                img = images[time]
+                                if (img === 'BottomSide.jpg') {
+                                    side = 0;
+                                }
+                                if (img === 'LeftSide.jpg') {
+                                    side = 1;
+                                }
+                                if (img === 'RightSide.jpg') {
+                                    side = 2;
+                                }
+                                if (img === 'TopSide.jpg') {
+                                    side = 3;
+                                }
+                                // output = null
+                                setTotalTimesPassed(time)
+                            }
                         }
+                    }, 500)
+
+
+                    total = [True, False - 1]
+                    setTs([True, False - 1])
+                    set_FAlse(False)
+                    set_TRue(True)
+                    if (False >= allowed_false) {
+                        set_test_end(true)
+                        end = true
                     }
-                }, 500)
+                    totalTimes = False + True
+                    if (totalTimes <= 0) {
+                        songLeftEye.play().then()
+                    }
 
+                    if (totalTimes === 5) {
+                        setIsLeft(false)
+                        ISL = false
+                        songRightEye.play().then()
+                    }
+                    if (totalTimes === 10) {
+                        setIsLeft(true)
+                        ISL = true
+                        songLeftEye.play().then()
+                    }
+                    if (totalTimes === 15) {
+                        setIsLeft(false)
+                        ISL = false
+                        songRightEye.play().then()
 
-                total = [True, False - 1]
-                setTs([True, False - 1])
-                set_FAlse(False)
-                set_TRue(True)
-                if (False >= allowed_false) {
-                    set_test_end(true)
-                    end = true
-                }
-                totalTimes = False + True
-                if (totalTimes <= 0) {
-                    songLeftEye.play().then()
-                }
+                    }
+                    if (totalTimes === 20) {
+                        setIsLeft(true)
+                        ISL = true
+                        songLeftEye.play().then()
 
-                if (totalTimes === 5) {
-                    setIsLeft(false)
-                    ISL = false
-                    songRightEye.play().then()
-                }
-                if (totalTimes === 10) {
-                    setIsLeft(true)
-                    ISL = true
-                    songLeftEye.play().then()
-                }
-                if (totalTimes === 15) {
-                    setIsLeft(false)
-                    ISL = false
-                    songRightEye.play().then()
+                    }
+                    if (totalTimes === 25) {
+                        setIsLeft(false)
+                        ISL = false
+                        songRightEye.play().then()
 
-                }
-                if (totalTimes === 20) {
-                    setIsLeft(true)
-                    ISL = true
-                    songLeftEye.play().then()
+                    }
+                    if (totalTimes === 30) {
+                        setIsLeft(true)
+                        ISL = true
+                        songLeftEye.play().then()
 
+                    }
                 }
-                if (totalTimes === 25) {
-                    setIsLeft(false)
-                    ISL = false
-                    songRightEye.play().then()
-
-                }
-                if (totalTimes === 30) {
-                    setIsLeft(true)
-                    ISL = true
-                    songLeftEye.play().then()
-
-                }
-            }
-        }, 3000)
+            }, 3000)
+        }, 1000)
     }
 
+    const runExam = () => {
+        if (setST === true) {
+            exam()
+        } else {
+            setTimeout(() => {
+                console.log('ReRun')
+                runExam()
+            }, 5000)
+        }
 
+    }
     useEffect(() => {
         if (route === 0) {
 
 
             LoadModel().then(r => {
             })
-            exam()
+            runExam()
         }
     }, [None_Change])
     const findingFaceVoice = () => {
-        console.log('ran')
-        let song = new Audio(findingFace)
-        song.play().then()
+        if (setST === false) {
+            let song = new Audio(findingFace)
+            song.play().then()
+        }
     }
 
     class playVoice {
@@ -673,104 +686,101 @@ function App() {
     }, [Step])
 
 
-
     return (<div>
 
-        {Step === 0 && <Page0 step={Step} setStep={setStep} />}
-        {(Step === 0 && have_played[0] === false) ? voice0.run() : voice0.pause()}
-        {Step === 1 && <Page1 step={Step} setStep={setStep} />}
+            {Step === 0 && <Page0 step={Step} setStep={setStep}/>}
+            {(Step === 0 && have_played[0] === false) ? voice0.run() : voice0.pause()}
+            {Step === 1 && <Page1 step={Step} setStep={setStep}/>}
 
-        {/*{Step !== 0 && voice0.song.pause()}*/}
-        {/*{Step !== 1 && voice1.song.pause()}*/}
-        {/*{Step !== 2 && voice2.song.pause()}*/}
-        {/*{Step !== 3 && voice3.song.pause()}*/}
+            {/*{Step !== 0 && voice0.song.pause()}*/}
+            {/*{Step !== 1 && voice1.song.pause()}*/}
+            {/*{Step !== 2 && voice2.song.pause()}*/}
+            {/*{Step !== 3 && voice3.song.pause()}*/}
 
-        {(Step === 1 && have_played[1] === false) ? voice1.run() : voice1.pause()}
-        {Step === 2 && <Page2 step={Step} setStep={setStep} setAge={setAge} age={age} />}
-        {(Step === 2 && have_played[2] === false) ? voice2.run() : voice2.pause()}
-        {Step === 3 && <Page3 step={Step} setStep={setStep} />}
-        {(Step === 3 && have_played[3] === false) ? voice3.run() : voice3.pause()}
-        {/* {Step === 4 && <Page4 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness} />} */}
+            {(Step === 1 && have_played[1] === false) ? voice1.run() : voice1.pause()}
+            {Step === 2 && <Page2 step={Step} setStep={setStep} setAge={setAge} age={age}/>}
+            {(Step === 2 && have_played[2] === false) ? voice2.run() : voice2.pause()}
+            {Step === 3 && <Page3 step={Step} setStep={setStep}/>}
+            {(Step === 3 && have_played[3] === false) ? voice3.run() : voice3.pause()}
+            {/* {Step === 4 && <Page4 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness} />} */}
 
 
-
-        {(loading === true && Step > 3) &&
-            <div className='loading'>
-                <p>
-                    PLEASE WAITING
-                </p>
-                <p>
-                    DOWNLOAD DATA OF TEST
-                </p>
-                <div className='progress-bar'>
-                    <div className='progress-bar-inner' style={{ width: `${percentage}%` }}></div>
+            {(loading === true && Step > 3) &&
+                <div className='loading'>
+                    <p>
+                        PLEASE WAITING
+                    </p>
+                    <p>
+                        DOWNLOAD DATA OF TEST
+                    </p>
+                    <div className='progress-bar'>
+                        <div className='progress-bar-inner' style={{width: `${percentage}%`}}></div>
+                    </div>
+                    <h3>{percentage} %</h3>
                 </div>
-                <h3>{percentage} %</h3>
-            </div>
-        }
-
-
-
-        {(test_end !== true && Step > 3 && loading === false) && <div className='Page'>
-
-            {v === true && <div className='result'>
-
-                <p className='result1'>TRUE : {TRue}</p>
-                {isLeft ? <p className='result3'>EYE : RIGHT </p> : <p className='result3'>EYE : LEFT </p>}
-                <p className='result2'>FALSE : {FAlse}</p>
-
-            </div>
             }
-            {v !== true && <div style={{ alignContent: 'center' }}>
-                <>
-                    <div style={{ background: "cyan" }} className={` main-container `}>
-                        <div style={{
-                            width: Intrep(distance, [0, 130], [ww, 10]),
-                            background: Intrep(distance, [0, 130], [ww, 10]) < ww / 4 ? "#66ffb3" : 'white'
-                        }}
-                            className={` dynamic-width-container`}>
-                            {distance !== null ? <span>
+
+
+            {(test_end !== true && Step > 3 && loading === false) && <div className='Page'>
+
+                {v === true && <div className='result'>
+
+                    <p className='result1'>TRUE : {TRue}</p>
+                    {isLeft ? <p className='result3'>EYE : RIGHT </p> : <p className='result3'>EYE : LEFT </p>}
+                    <p className='result2'>FALSE : {FAlse}</p>
+
+                </div>
+                }
+                {v !== true && <div style={{alignContent: 'center'}}>
+                    <>
+                        <div style={{background: "cyan"}} className={` main-container `}>
+                            <div style={{
+                                width: Intrep(distance, [0, 130], [ww, 10]),
+                                background: Intrep(distance, [0, 130], [ww, 10]) < ww / 4 ? "#66ffb3" : 'white'
+                            }}
+                                 className={` dynamic-width-container`}>
+                                {distance !== null ? <span>
                                 {distance} CM | {start_dis} CM Require to Start
                             </span> : <span>
                                 FACE MODEL TRYING TO LOAD...
-                                {findingFaceVoice()}
+                                    {findingFaceVoice()}
                             </span>}
+                            </div>
                         </div>
-                    </div>
-                </>
+                    </>
+                </div>}
+                {v === true && <div className='ImageCorner'>
+                    {TestShow(TRue, FAlse, Intrep(px, [80, 350], [100, start_dis]), totalTimesPassed)}
+                </div>}
+
+                <Webcam
+                    ref={webcamRef}
+                    height={hig}
+                    width={wid}
+                    mirrored={true}
+                    className='camera'
+                    style={{
+                        height: `${isMobile ? 0 : 200}px`, width: `${isMobile ? 0 : 300}px`,
+                    }}
+                />
+
             </div>}
-            {v === true && <div className='ImageCorner'>
-                {TestShow(TRue, FAlse, Intrep(px, [80, 350], [100, start_dis]), totalTimesPassed)}
+            {test_end === true && <div style={{
+                height: '100vh',
+                width: '100%',
+                backgroundColor: 'black',
+                justifyContent: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
+            }}>
+                <p className='end_result'>Test Ended</p>
+                <p className='end_result'>TRUE : {TRue}</p>
+                <p className='end_result'>FALSE : {FAlse}</p>
+                <p className='end_result'>AGE : {age}</p>
+
             </div>}
-
-            <Webcam
-                ref={webcamRef}
-                height={hig}
-                width={wid}
-                mirrored={true}
-                className='camera'
-                style={{
-                    height: `${isMobile ? 0 : 200}px`, width: `${isMobile ? 0 : 300}px`,
-                }}
-            />
-
-        </div>}
-        {test_end === true && <div style={{
-            height: '100vh',
-            width: '100%',
-            backgroundColor: 'black',
-            justifyContent: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-        }}>
-            <p className='end_result'>Test Ended</p>
-            <p className='end_result'>TRUE : {TRue}</p>
-            <p className='end_result'>FALSE : {FAlse}</p>
-            <p className='end_result'>AGE : {age}</p>
-
-        </div>}
-    </div>
+        </div>
 
     )
 
