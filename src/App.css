@@ -58,10 +58,11 @@ body {
 }
 
 .ImageCorner {
-    height: 300px;
+    height: 500px;
     width: 300px;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     display: flex;
     align-items: center;
     position: relative;
