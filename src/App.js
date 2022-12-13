@@ -5,7 +5,7 @@ import * as tf from '@tensorflow/tfjs';
 import {isMobile} from 'react-device-detect';
 import {fl, df} from './utils'
 import {Intrep} from './funcs';
-import {Page, Page0, Page1, Page2, Page3, Page4} from "./PreShowPage";
+import {Page, Page0, Page1, Page2, Page3, Page4,Page5} from "./PreShowPage";
 import * as model_face from '@tensorflow-models/blazeface'
 import {step} from '@tensorflow/tfjs';
 
@@ -376,7 +376,7 @@ function App() {
 
     const [loading, set_loading] = useState(true);
     const [test_end, set_test_end] = useState(false)
-    const [ts, setTs] = useState([0, 0, 0])
+    // const [ts, setTs] = useState([0, 0, 0])
     const [totalTimesPassed, setTotalTimesPassed] = useState(0)
     const [TRue, set_TRue] = useState(0)
     const [FAlse, set_FAlse] = useState(0)
@@ -413,7 +413,6 @@ function App() {
     let p_false = 2
     focal_distance = fl(known_distance, known_width, ref_image_face_width);
     const Detection = async (Model_Face, Model) => {
-
         if (typeof webcamRef.current !== "undefined" && webcamRef.current !== null && typeof webcamRef.current.video !== "undefined" && gg !== null && end !== true) {
             const video = webcamRef.current.video
             const VideoWeight = webcamRef.current.video.videoWidth;
@@ -492,11 +491,19 @@ function App() {
     const LoadModel = async () => {
         if (route === 0) {
             route = 1
-            // const Model_Face = await model_face.load();
-            const Model_Face = null
+            const Model_Face = await model_face.load();
+            // const Model_Face = null
             console.log('Face Model Loaded')
+            // let Model ;
+            // try {
             const Model = await tf.loadGraphModel(URL);
             // const Model = null
+            // }
+            // catch(e) {
+            //     console.log(e)
+            // }
+
+
             console.log("Model Loaded");
             set_loading(false)
             gg = true
@@ -590,7 +597,7 @@ function App() {
 
 
                 total = [True, False - 1]
-                setTs([True, False - 1])
+                // setTs([True, False - 1])
                 set_FAlse(False)
                 set_TRue(True)
                 if (False >= allowed_false) {
@@ -717,9 +724,10 @@ function App() {
             {Step === 1 && <Page1 step={Step} setStep={setStep}/>}
             {Step === 2 && <Page2 step={Step} setStep={setStep} setAge={setAge} age={age}/>}
             {Step === 3 && <Page3 step={Step} setStep={setStep}/>}
-            {/*{Step === 4 && <Page4 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness} />}*/}
+            {Step === 4 && <Page4 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness} />}
+            {Step === 5 && <Page4 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness} />}
 
-            {(loading === true && Step > 3) &&
+            {(loading === true && Step > 5) &&
                 <div className='loading'>
                     <p>
                         PLEASE WAITING
@@ -735,7 +743,7 @@ function App() {
             }
 
 
-            {(test_end !== true && Step > 3 && loading === false) && <div className='Page'>
+            {(test_end !== true && Step > 5 && loading === false) && <div className='Page'>
 
                 {v === true && <div className='result'>
 

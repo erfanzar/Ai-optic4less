@@ -1,5 +1,5 @@
 import './App.css';
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 
 
 export const Page = (props) => {
@@ -9,6 +9,16 @@ export const Page = (props) => {
 
 
 export const Page0 = (props) => {
+    const [isEnded,setIsEnded] = useState(true)
+
+    useEffect(() => {
+        var audio = new Audio('/assets/voice/welcome_uk_female.mp3');
+        console.log('played on 1')
+        audio.play();
+        audio.addEventListener('ended' , ()=>{
+            setIsEnded(true)
+        })
+    }, [])
 
     return (
         <div style={{
@@ -41,8 +51,10 @@ export const Page0 = (props) => {
                 height: '60px'
             }}></div>
             <div onClick={() => {
-                props.setStep(props.step + 1)
-            }} style={{
+                if (isEnded === true){
+                    props.setStep(props.step + 1)
+                }
+            }} style={isEnded === true ? {
                 alignSelf: 'center',
                 alignItems: 'center',
                 height: '80px',
@@ -51,7 +63,17 @@ export const Page0 = (props) => {
                 justifyContent: 'center',
                 backgroundColor: 'black',
                 cursor: 'pointer'
-            }}>
+            }: {
+                alignSelf: 'center',
+                alignItems: 'center',
+                height: '80px',
+                width: '200px',
+                display: 'flex',
+                justifyContent: 'center',
+                backgroundColor: 'gray',
+                cursor: 'pointer'
+            }
+            }>
                 <p style={{
                     alignItems: 'center',
                     color: 'white'
@@ -65,11 +87,15 @@ export const Page0 = (props) => {
 
 
 export const Page1 = (props) => {
+    const [isEnded,setIsEnded] = useState(false)
 
     useEffect(() => {
         var audio = new Audio('/assets/voice/male_or_female_uk_female.mp3');
         console.log('played on 1')
         audio.play();
+        audio.addEventListener('ended' , ()=>{
+            setIsEnded(true)
+        })
     }, [])
 
     return (
@@ -103,18 +129,29 @@ export const Page1 = (props) => {
                 // backgroundColor: 'black'
             }}>
                 <div onClick={() => {
-                    props.setStep(props.step + 1)
-                }} style={{
+                    if (isEnded === true){
+                        props.setStep(props.step + 1)
+                    }
+                }} style={isEnded === true ? {
                     alignSelf: 'center',
                     alignItems: 'center',
                     height: '80px',
                     width: '200px',
-                    margin: '20px 10px',
                     display: 'flex',
                     justifyContent: 'center',
                     backgroundColor: 'black',
                     cursor: 'pointer'
-                }}>
+                }: {
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                    height: '80px',
+                    width: '200px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    backgroundColor: 'gray',
+                    cursor: 'pointer'
+                }
+                }>
                     <p style={{
                         alignItems: 'center',
                         color: 'white'
@@ -125,17 +162,26 @@ export const Page1 = (props) => {
 
                 <div onClick={() => {
                     props.setStep(props.step + 1)
-                }} style={{
+                }} style={isEnded === true ? {
                     alignSelf: 'center',
                     alignItems: 'center',
-                    margin: '20px 10px',
                     height: '80px',
                     width: '200px',
                     display: 'flex',
                     justifyContent: 'center',
                     backgroundColor: 'black',
                     cursor: 'pointer'
-                }}>
+                }: {
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                    height: '80px',
+                    width: '200px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    backgroundColor: 'gray',
+                    cursor: 'pointer'
+                }
+                }>
                     <p style={{
                         alignItems: 'center',
                         color: 'white'
@@ -152,11 +198,15 @@ export const Page1 = (props) => {
 
 
 export const Page2 = (props) => {
+    const [isEnded,setIsEnded] = useState(false)
 
     useEffect(() => {
         var audio = new Audio('/assets/voice/select_your_age_uk_female.mp3');
         console.log('played on 2')
         audio.play();
+        audio.addEventListener('ended' , ()=>{
+            setIsEnded(true)
+        })
     }, [])
 
     return (
@@ -218,8 +268,11 @@ export const Page2 = (props) => {
                 height: '30px'
             }}></div>
             <div onClick={() => {
-                props.setStep(props.step + 1)
-            }} style={{
+                if (isEnded === true){
+                    props.setStep(props.step + 1)
+                }
+
+            }} style={isEnded === true ? {
                 alignSelf: 'center',
                 alignItems: 'center',
                 height: '80px',
@@ -228,7 +281,17 @@ export const Page2 = (props) => {
                 justifyContent: 'center',
                 backgroundColor: 'black',
                 cursor: 'pointer'
-            }}>
+            }: {
+                alignSelf: 'center',
+                alignItems: 'center',
+                height: '80px',
+                width: '200px',
+                display: 'flex',
+                justifyContent: 'center',
+                backgroundColor: 'gray',
+                cursor: 'pointer'
+            }
+            }>
                 <p style={{
                     alignItems: 'center',
                     color: 'white'
@@ -242,11 +305,15 @@ export const Page2 = (props) => {
 
 
 export const Page3 = (props) => {
+    const [isEnded,setIsEnded] = useState(false)
 
     useEffect(() => {
         var audio = new Audio('/assets/voice/model_loaded_uk_female.mp3');
         console.log('played on 3')
         audio.play();
+        audio.addEventListener('ended' , ()=>{
+            setIsEnded(true)
+        })
     }, [])
 
 
@@ -286,9 +353,10 @@ export const Page3 = (props) => {
                 height: '60px'
             }}></div>
             <div onClick={() => {
-
-                props.setStep(props.step + 1)
-            }} style={{
+                if (isEnded === true){
+                    props.setStep(props.step + 1)
+                }
+            }} style={isEnded === true ? {
                 alignSelf: 'center',
                 alignItems: 'center',
                 height: '80px',
@@ -297,7 +365,17 @@ export const Page3 = (props) => {
                 justifyContent: 'center',
                 backgroundColor: 'black',
                 cursor: 'pointer'
-            }}>
+            }: {
+                alignSelf: 'center',
+                alignItems: 'center',
+                height: '80px',
+                width: '200px',
+                display: 'flex',
+                justifyContent: 'center',
+                backgroundColor: 'gray',
+                cursor: 'pointer'
+            }
+            }>
                 <p style={{
                     alignItems: 'center',
                     color: 'white'
@@ -312,7 +390,16 @@ export const Page3 = (props) => {
 
 
 export const Page4 = (props) => {
-    console.log('played on 4')
+    const [isEnded,setIsEnded] = useState(false)
+
+    useEffect(() => {
+        var audio = new Audio('/assets/voice/left-larry-low-latency.mp3');
+        console.log('played on 4')
+        audio.play();
+        audio.addEventListener('ended' , ()=>{
+            setIsEnded(true)
+        })
+    }, [])
     return (
         <div style={{
             width: '100%',
@@ -327,7 +414,7 @@ export const Page4 = (props) => {
             <p style={{
                 fontSize: '20px'
             }}>
-                Eye Weakness
+                Eye weakness number for left eye
             </p>
             <div style={{
                 height: '60px'
@@ -370,8 +457,10 @@ export const Page4 = (props) => {
                 height: '30px'
             }}></div>
             <div onClick={() => {
-                props.setStep(props.step + 1)
-            }} style={{
+                if (isEnded === true){
+                    props.setStep(props.step + 1)
+                }
+            }} style={isEnded === true ? {
                 alignSelf: 'center',
                 alignItems: 'center',
                 height: '80px',
@@ -380,7 +469,122 @@ export const Page4 = (props) => {
                 justifyContent: 'center',
                 backgroundColor: 'black',
                 cursor: 'pointer'
+            }: {
+                alignSelf: 'center',
+                alignItems: 'center',
+                height: '80px',
+                width: '200px',
+                display: 'flex',
+                justifyContent: 'center',
+                backgroundColor: 'gray',
+                cursor: 'pointer'
+            }
+            }>
+                <p style={{
+                    alignItems: 'center',
+                    color: 'white'
+                }}>
+                    NEXT !
+                </p>
+            </div>
+        </div>
+    )
+}
+
+
+
+export const Page5 = (props) => {
+    const [isEnded,setIsEnded] = useState(false)
+
+    useEffect(() => {
+        var audio = new Audio('/assets/voice/right-larry-low-latency.mp3');
+        console.log('played on 5')
+        audio.play();
+        audio.addEventListener('ended' , ()=>{
+            setIsEnded(true)
+        })
+    }, [])
+
+    return (
+        <div style={{
+            width: '100%',
+            height: '100vh',
+            backgroundColor: 'white',
+            alignSelf: 'center',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center'
+        }}>
+            <p style={{
+                fontSize: '20px'
             }}>
+                Eye weakness number for right eye
+            </p>
+            <div style={{
+                height: '60px'
+            }}></div>
+            <div className="slidecontainer" style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <div className="slider-zaf-keeper">
+                    <input type="range" min="0" max="10" value={props.age} className="slider-zaf" step={0.25}
+                           onChange={(e) => {
+                               props.setWeakness(e.target.value)
+                           }} />
+                    <div className="slider-zaf-num">
+                        {[0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 7.75, 8, 8.25, 8.5, 8.75, 9, 9.25, 9.5, 9.75, 10].map((item, index) =>
+                            <div className={`slider-zaf-num-item ${item === 10 && 'slider-zaf-num-item-end'} ${item === 0 && 'slider-zaf-num-item-start'} `}>
+                                <span className={`slider-zaf-num-item-line ${[0, 5, 10].indexOf(item) !== -1 && 'slider-zaf-num-item-line-active'}`} />
+                                {[0, 5, 10].indexOf(item) !== -1 ?
+                                    <span className='slider-zaf-num-item-text'>{item}</span>
+                                    :
+                                    <span className='slider-zaf-num-item-text-small'>{item}</span>
+                                }
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <div style={{
+                height: '60px'
+            }}></div>
+            <p style={{
+                alignItems: 'center',
+                color: 'black'
+            }}>
+                {props.weakness}
+            </p>
+            <div style={{
+                height: '30px'
+            }}></div>
+            <div onClick={() => {
+                if (isEnded === true){
+                    props.setStep(props.step + 1)
+                }
+            }} style={isEnded === true ? {
+                alignSelf: 'center',
+                alignItems: 'center',
+                height: '80px',
+                width: '200px',
+                display: 'flex',
+                justifyContent: 'center',
+                backgroundColor: 'black',
+                cursor: 'pointer'
+            }: {
+                alignSelf: 'center',
+                alignItems: 'center',
+                height: '80px',
+                width: '200px',
+                display: 'flex',
+                justifyContent: 'center',
+                backgroundColor: 'gray',
+                cursor: 'pointer'
+            }
+            }>
                 <p style={{
                     alignItems: 'center',
                     color: 'white'
