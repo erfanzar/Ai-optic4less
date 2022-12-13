@@ -725,7 +725,7 @@ function App() {
             {Step === 2 && <Page2 step={Step} setStep={setStep} setAge={setAge} age={age}/>}
             {Step === 3 && <Page3 step={Step} setStep={setStep}/>}
             {Step === 4 && <Page4 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness} />}
-            {Step === 5 && <Page4 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness} />}
+            {Step === 5 && <Page5 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness} />}
 
             {(loading === true && Step > 5) &&
                 <div className='loading'>
