@@ -3,75 +3,42 @@ import './App.css';
 import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
 import {isMobile} from 'react-device-detect';
-import {fl, df} from './utils'
+import {fl, df, getOperatingSystem, images} from './utils'
 import {Intrep} from './funcs';
-import {Page, Page0, Page1, Page2, Page3, Page4,Page5} from "./PreShowPage";
+import {selectGender, selectAge, coverRightEye, coverLeftEye, findingFace, welcomeVoice, modelLoaded} from './voice'
+import {Page0, Page1, Page2, Page3, Page4, Page5} from "./PreShowPage";
 import * as model_face from '@tensorflow-models/blazeface'
-import {step} from '@tensorflow/tfjs';
+
 
 let v = null;
-const welcomeVoice = '/assets/voice/welcome_uk_female.mp3';
-const selectAge = '/assets/voice/select_your_age_uk_female.mp3';
-const selectGender = '/assets/voice/male_or_female_uk_female.mp3';
-const modelLoaded = '/assets/voice/model_loaded_uk_female.mp3';
-const findingFace = '/assets/voice/finding_face_uk_female.mp3';
-const coverLeftEye = '/assets/voice/cover_left_eye_uk_female.mp3';
-const coverRightEye = '/assets/voice/cover_right_eye_uk_female.mp3';
-
+let URL = null;
+let os = getOperatingSystem(window);
 let prsc_l = 1
 let known_distance = null
 let known_width = null
 let ref_image_face_width = null
 let run_exam = true;
+
 if (isMobile) {
     known_distance = 44.5
     known_width = 18
     ref_image_face_width = 217
+    URL = 'https://ai.optics4less.com/Model/Old/model.json'
 } else {
     known_distance = 44.5
     known_width = 18
     ref_image_face_width = 300
+    if (os === 'macOS') {
+        URL = 'https://ai.optics4less.com/Model/v5m/model.json'
+    } else {
+
+        URL = 'https://ai.optics4less.com/Model/Old/model.json'
+    }
+
 }
 
-const images = [
-    'BottomSide.jpg',
-    'LeftSide.jpg',
-    'RightSide.jpg',
-    'TopSide.jpg',
-    'BottomSide.jpg',
-    'LeftSide.jpg',
-    'RightSide.jpg',
-    'TopSide.jpg',
-    'BottomSide.jpg',
-    'LeftSide.jpg',
-    'RightSide.jpg',
-    'TopSide.jpg',
-    'BottomSide.jpg',
-    'LeftSide.jpg',
-    'RightSide.jpg',
-    'TopSide.jpg',
-    'BottomSide.jpg',
-    'LeftSide.jpg',
-    'RightSide.jpg',
-    'TopSide.jpg',
-    'BottomSide.jpg',
-    'LeftSide.jpg',
-    'RightSide.jpg',
-    'TopSide.jpg',
-    'BottomSide.jpg',
-    'LeftSide.jpg',
-    'RightSide.jpg',
-    'TopSide.jpg',
-    'BottomSide.jpg',
-    'LeftSide.jpg',
-    'RightSide.jpg',
-    'TopSide.jpg',
-    'BottomSide.jpg',
-    'LeftSide.jpg',
-    'RightSide.jpg',
-    'TopSide.jpg'
-]
-
+console.log('DEVICE OS FOR LOADING ALL THE HYPER-PARAMETERS ', os)
+console.log('MODEL URL TO LOAD {HIDE IN INTERFACE} : ', URL)
 
 const ImageShow = (onShow, index, px) => {
     if (onShow === true) {
@@ -93,9 +60,7 @@ const ImageShow = (onShow, index, px) => {
         ><img className='Side'
               src={`/assets/images/${images[index]}`}
               style={{
-                  height: `${px}px`,
-                  width: `${px}px`,
-                  margin: '20px'
+                  height: `${px}px`, width: `${px}px`, margin: '20px'
               }}
         /></div>)
     } else {
@@ -125,17 +90,14 @@ const TestShow = (ac, af, px, total) => {
     if (v === true) {
         if (total <= 0) {
             return (<div style={{
-                display: 'flex',
-                flexDirection: 'row'
+                display: 'flex', flexDirection: 'row'
             }}>
                 {ImageShow(total === 0, 0, px)}
                 <div style={{
                     display: 'flex'
                 }}>
                     <p style={{
-                        color: 'black',
-                        margin: '20px',
-                        fontSize: `${font}px`
+                        color: 'black', margin: '20px', fontSize: `${font}px`
                     }}>
                         20/200
                     </p>
@@ -145,8 +107,7 @@ const TestShow = (ac, af, px, total) => {
         if (total >= 1 && total < 3) {
             px /= 2
             return (<div style={{
-                display: 'flex',
-                flexDirection: 'row'
+                display: 'flex', flexDirection: 'row'
             }}>
                 <div>
                     {ImageShow(total === 1, 1, px)}
@@ -156,9 +117,7 @@ const TestShow = (ac, af, px, total) => {
                     display: 'flex'
                 }}>
                     <p style={{
-                        color: 'black',
-                        margin: '20px',
-                        fontSize: `${font}px`
+                        color: 'black', margin: '20px', fontSize: `${font}px`
                     }}>
                         20/100
                     </p>
@@ -168,13 +127,11 @@ const TestShow = (ac, af, px, total) => {
         if (total >= 3 && total < 6) {
             px /= 3
             return (<div style={{
-                display: 'flex',
-                flexDirection: 'column'
+                display: 'flex', flexDirection: 'column'
             }}>
                 <div
                     style={{
-                        display: 'flex',
-                        flexDirection: 'row'
+                        display: 'flex', flexDirection: 'row'
                     }}>
                     {ImageShow(total === 3, 3, px)}
                     {ImageShow(total === 4, 4, px)}
@@ -184,9 +141,7 @@ const TestShow = (ac, af, px, total) => {
                     display: 'flex'
                 }}>
                     <p style={{
-                        color: 'black',
-                        margin: '20px',
-                        fontSize: `${font}px`
+                        color: 'black', margin: '20px', fontSize: `${font}px`
                     }}>
                         20/70
                     </p>
@@ -196,29 +151,25 @@ const TestShow = (ac, af, px, total) => {
         if (total >= 6 && total < 10) {
             px /= 4
             return (<div style={{
-                display: 'flex',
-                flexDirection: 'column'
+                display: 'flex', flexDirection: 'column'
             }}>
                 <div style={{
-                    display: 'flex',
-                    flexDirection: 'row'
+                    display: 'flex', flexDirection: 'row'
                 }}>
                     {ImageShow(total === 6, 6, px)}
                     {ImageShow(total === 7, 7, px)}
                     {ImageShow(total === 8, 8, px)}
                     {ImageShow(total === 9, 9, px)}
 
-                <div style={{
-                    display: 'flex'
-                }}>
-                    <p style={{
-                        color: 'black',
-                        margin: '20px',
-                        fontSize: `${font}px`
+                    <div style={{
+                        display: 'flex'
                     }}>
-                        20/50
-                    </p>
-                </div>
+                        <p style={{
+                            color: 'black', margin: '20px', fontSize: `${font}px`
+                        }}>
+                            20/50
+                        </p>
+                    </div>
                 </div>
             </div>)
         }
@@ -228,53 +179,45 @@ const TestShow = (ac, af, px, total) => {
                 display: 'flex',
             }}>
                 <div style={{
-                    display: 'flex',
-                    flexDirection: 'row'
+                    display: 'flex', flexDirection: 'row'
                 }}>
                     {ImageShow(total === 10, 10, px)}
                     {ImageShow(total === 11, 11, px)}
                     {ImageShow(total === 12, 12, px)}
-                <div/>
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'row'
-                }}>
-                    {ImageShow(total === 13, 13, px)}
-                    {ImageShow(total === 14, 14, px)}
+                    <div/>
                     <div style={{
-                        display: 'flex',
-                        flexDirection: 'column'
+                        display: 'flex', flexDirection: 'row'
                     }}>
-                        <p style={{
-                            color: 'black',
-                            margin: '20px',
-                            fontSize: `${font}px`
+                        {ImageShow(total === 13, 13, px)}
+                        {ImageShow(total === 14, 14, px)}
+                        <div style={{
+                            display: 'flex', flexDirection: 'column'
                         }}>
-                            20/40
-                        </p>
+                            <p style={{
+                                color: 'black', margin: '20px', fontSize: `${font}px`
+                            }}>
+                                20/40
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>)
+            </div>)
         }
         if (total >= 14 && total < 21) {
             px /= 6
             return (<div style={{
-                display: 'flex',
-                flexDirection: 'column'
+                display: 'flex', flexDirection: 'column'
             }}>
 
                 <div style={{
-                    display: 'flex',
-                    flexDirection: 'row'
+                    display: 'flex', flexDirection: 'row'
                 }}>
                     {ImageShow(total === 15, 15, px)}
                     {ImageShow(total === 16, 16, px)}
                     {ImageShow(total === 17, 17, px)}
                 </div>
                 <div style={{
-                    display: 'flex',
-                    flexDirection: 'row'
+                    display: 'flex', flexDirection: 'row'
                 }}>
                     {ImageShow(total === 18, 18, px)}
                     {ImageShow(total === 19, 19, px)}
@@ -283,9 +226,7 @@ const TestShow = (ac, af, px, total) => {
                         display: 'flex'
                     }}>
                         <p style={{
-                            color: 'black',
-                            margin: '20px',
-                            fontSize: `${font}px`
+                            color: 'black', margin: '20px', fontSize: `${font}px`
                         }}>
                             20/30
                         </p>
@@ -296,12 +237,10 @@ const TestShow = (ac, af, px, total) => {
         if (total >= 21 && total < 28) {
             px /= 7
             return (<div style={{
-                display: 'flex',
-                flexDirection: 'column'
+                display: 'flex', flexDirection: 'column'
             }}>
                 <div style={{
-                    display: 'flex',
-                    flexDirection: 'row'
+                    display: 'flex', flexDirection: 'row'
                 }}>
                     {ImageShow(total === 21, 21, px)}
                     {ImageShow(total === 22, 22, px)}
@@ -309,8 +248,7 @@ const TestShow = (ac, af, px, total) => {
                     {ImageShow(total === 24, 24, px)}
                 </div>
                 <div style={{
-                    display: 'flex',
-                    flexDirection: 'row'
+                    display: 'flex', flexDirection: 'row'
                 }}>
                     {ImageShow(total === 25, 25, px)}
                     {ImageShow(total === 26, 26, px)}
@@ -319,9 +257,7 @@ const TestShow = (ac, af, px, total) => {
                         display: 'flex'
                     }}>
                         <p style={{
-                            color: 'black',
-                            margin: '20px',
-                            fontSize: `${font}px`
+                            color: 'black', margin: '20px', fontSize: `${font}px`
                         }}>
                             20/20
                         </p>
@@ -332,8 +268,7 @@ const TestShow = (ac, af, px, total) => {
         if (total >= 28 && total < 36) {
             px /= 8
             return (<div style={{
-                display: 'flex',
-                flexDirection: 'column'
+                display: 'flex', flexDirection: 'column'
             }}>
                 <div>
                     {ImageShow(total === 28, 28, px)}
@@ -352,9 +287,7 @@ const TestShow = (ac, af, px, total) => {
                         display: 'flex'
                     }}>
                         <p style={{
-                            color: 'black',
-                            margin: '20px',
-                            fontSize: `${font}px`
+                            color: 'black', margin: '20px', fontSize: `${font}px`
                         }}>
                             20/10
                         </p>
@@ -366,7 +299,6 @@ const TestShow = (ac, af, px, total) => {
 }
 
 
-
 function App() {
 
     let songLeftEye = new Audio(coverLeftEye)
@@ -376,17 +308,17 @@ function App() {
 
     const [loading, set_loading] = useState(true);
     const [test_end, set_test_end] = useState(false)
-    // const [ts, setTs] = useState([0, 0, 0])
+
     const [totalTimesPassed, setTotalTimesPassed] = useState(0)
     const [TRue, set_TRue] = useState(0)
     const [FAlse, set_FAlse] = useState(0)
     const [distance, set_Distance] = useState(null)
-    const [va, setVa] = useState(null)
+    // const [va, setVa] = useState(null)
     const [px, set_px] = useState(null)
     const [Step, setStep] = useState(0)
     const [age, setAge] = useState(20)
     const [weakness, setWeakness] = useState(0)
-    const [baner, setBaner] = useState('')
+    const [banner, setBanner] = useState('')
     const [percentage, setPercentage] = useState(1)
 
 
@@ -394,13 +326,14 @@ function App() {
     const wid = 640;
     const hig = 640;
     const time_test_run = 5000;
-    const URL = 'https://ai.optics4less.com/Model/Old/model.json'
+
     let classes_name = ['bottom', 'left', 'right', 'top']
     let end = false;
     let output;
     let None_Change = 0;
     let route = 0;
-    let total = [0, 0, 0];
+
+    // let total = [0, 0, 0];
     let totalTimes = 0;
     let gg = null;
     let start_dis = 150;
@@ -419,8 +352,12 @@ function App() {
             webcamRef.current.video.height = webcamRef.current.video.videoHeight;
             webcamRef.current.video.width = VideoWeight;
             if (Model !== null) {
-                const x = tf.image.resizeBilinear(tf.browser.fromPixels(video), [640, 640])
-                    .div(255.0).expandDims(0).reshape([1, 640, 640, 3]);
+                const x = tf.image.resizeBilinear(
+                    tf.browser
+                        .fromPixels(video), [640, 640])
+                    .div(255.0)
+                    .expandDims(0)
+                    .reshape([1, 640, 640, 3]);
                 const pred = await Model.executeAsync(x)
 
                 const [boxes, scores, classes, valid] = pred
@@ -491,22 +428,18 @@ function App() {
     const LoadModel = async () => {
         if (route === 0) {
             route = 1
+
             const Model_Face = await model_face.load();
             // const Model_Face = null
             console.log('Face Model Loaded')
-            // let Model ;
-            // try {
+
             const Model = await tf.loadGraphModel(URL);
             // const Model = null
-            // }
-            // catch(e) {
-            //     console.log(e)
-            // }
-
-
             console.log("Model Loaded");
+
             set_loading(false)
             gg = true
+
             setInterval(() => {
                 Detection(Model_Face, Model)
             }, 1000);
@@ -525,57 +458,34 @@ function App() {
         let img = images[time]
         if (img === 'BottomSide.jpg') {
             side = 0;
-        }
-        if (img === 'LeftSide.jpg') {
+        } else if (img === 'LeftSide.jpg') {
             side = 1;
-        }
-        if (img === 'RightSide.jpg') {
+        } else if (img === 'RightSide.jpg') {
             side = 2;
-        }
-        if (img === 'TopSide.jpg') {
+        } else if (img === 'TopSide.jpg') {
             side = 3;
         }
         setInterval(() => {
-            if (run_exam === true){
+            if (run_exam === true) {
                 if (time === 0) {
                     setTimeout(() => {
                     }, 4000)
                 }
                 if (gg !== null && v !== null && end !== true) {
 
-                let current = Date.now()
-                setInterval(() => {
-                    console.log(side, output)
-                    current = Date.now()
-                    if (side === output) {
-                        start = Date.now();
-                        True += 1
-                        time += 1
-                        output = null
-                        if (False >= p_false) {
-                            allowed_false += 1
-                            p_false -= 1
-                        }
-                        img = images[time]
-                        if (img === 'BottomSide.jpg') {
-                            side = 0;
-                        }
-                        if (img === 'LeftSide.jpg') {
-                            side = 1;
-                        }
-                        if (img === 'RightSide.jpg') {
-                            side = 2;
-                        }
-                        if (img === 'TopSide.jpg') {
-                            side = 3;
-                        }
-                        setTotalTimesPassed(time)
-                    } else {
-                        if (current - start >= time_test_run) {
+                    let current = Date.now()
+                    setInterval(() => {
+                        console.log(side, output)
+                        current = Date.now()
+                        if (side === output) {
                             start = Date.now();
-                            False += 1
+                            True += 1
                             time += 1
-                            current = Date.now()
+                            output = null
+                            if (False >= p_false) {
+                                allowed_false += 1
+                                p_false -= 1
+                            }
                             img = images[time]
                             if (img === 'BottomSide.jpg') {
                                 side = 0;
@@ -589,102 +499,123 @@ function App() {
                             if (img === 'TopSide.jpg') {
                                 side = 3;
                             }
-                            output = null
                             setTotalTimesPassed(time)
+                        } else {
+                            if (current - start >= time_test_run) {
+                                start = Date.now();
+                                False += 1
+                                time += 1
+                                current = Date.now()
+                                img = images[time]
+                                if (img === 'BottomSide.jpg') {
+                                    side = 0;
+                                }
+                                if (img === 'LeftSide.jpg') {
+                                    side = 1;
+                                }
+                                if (img === 'RightSide.jpg') {
+                                    side = 2;
+                                }
+                                if (img === 'TopSide.jpg') {
+                                    side = 3;
+                                }
+                                output = null
+                                setTotalTimesPassed(time)
+                            }
                         }
+                    }, 500)
+
+
+                    // total = [True, False - 1]
+                    // setTs([True, False - 1])
+                    set_FAlse(False)
+                    set_TRue(True)
+                    if (False >= allowed_false) {
+                        set_test_end(true)
+                        end = true
                     }
-                }, 500)
+                    totalTimes = False + True
+                    if (totalTimes === 0) {
+                        songLeftEye.play().then()
+                        setBanner('COVER YOUR LEFT  EYE')
+                        run_exam = false
+                        setTimeout(() => {
+                            setBanner('')
+                            run_exam = true
+                        }, 5000)
+                    }
 
+                    if (totalTimes === 5) {
+                        setIsLeft(false)
+                        ISL = false
+                        songRightEye.play().then()
+                        setBanner('COVER YOUR RIGHT EYE')
+                        run_exam = false
+                        setTimeout(() => {
+                            setBanner('')
+                            run_exam = true
+                        }, 5000)
+                    }
+                    if (totalTimes === 10) {
+                        setIsLeft(true)
+                        ISL = true
+                        songLeftEye.play().then()
+                        setBanner('COVER YOUR LEFT  EYE')
+                        run_exam = false
+                        setTimeout(() => {
+                            setBanner('')
+                            run_exam = true
+                        }, 5000)
+                    }
+                    if (totalTimes === 15) {
+                        setIsLeft(false)
+                        ISL = false
+                        songRightEye.play().then()
+                        setBanner('COVER YOUR RIGHT EYE')
+                        run_exam = false
+                        setTimeout(() => {
+                            setBanner('')
+                            run_exam = true
+                        }, 5000)
 
-                total = [True, False - 1]
-                // setTs([True, False - 1])
-                set_FAlse(False)
-                set_TRue(True)
-                if (False >= allowed_false) {
-                    set_test_end(true)
-                    end = true
-                }
-                totalTimes = False + True
-                if (totalTimes === 0) {
-                    songLeftEye.play().then()
-                    setBaner('COVER YOUR LEFT  EYE')
-                    run_exam = false
-                    setTimeout(()=>{
-                        setBaner('')
-                        run_exam = true
-                    },5000)
-                }
+                    }
+                    if (totalTimes === 20) {
+                        setIsLeft(true)
+                        ISL = true
+                        songLeftEye.play().then()
+                        setBanner('COVER YOUR LEFT  EYE')
+                        run_exam = false
+                        setTimeout(() => {
+                            setBanner('')
+                            run_exam = true
+                        }, 5000)
 
-                if (totalTimes === 5) {
-                    setIsLeft(false)
-                    ISL = false
-                    songRightEye.play().then()
-                    setBaner('COVER YOUR RIGHT EYE')
-                    run_exam = false
-                    setTimeout(()=>{
-                        setBaner('')
-                        run_exam = true
-                    },5000)
-                }
-                if (totalTimes === 10) {
-                    setIsLeft(true)
-                    ISL = true
-                    songLeftEye.play().then()
-                    setBaner('COVER YOUR LEFT  EYE')
-                    run_exam = false
-                    setTimeout(()=>{
-                        setBaner('')
-                        run_exam = true
-                    },5000)
-                }
-                if (totalTimes === 15) {
-                    setIsLeft(false)
-                    ISL = false
-                    songRightEye.play().then()
-                    setBaner('COVER YOUR RIGHT EYE')
-                    run_exam = false
-                    setTimeout(()=>{
-                        setBaner('')
-                        run_exam = true
-                    },5000)
+                    }
+                    if (totalTimes === 25) {
+                        setIsLeft(false)
+                        ISL = false
+                        songRightEye.play().then()
+                        setBanner('COVER YOUR RIGHT EYE')
+                        run_exam = false
+                        setTimeout(() => {
+                            setBanner('')
+                            run_exam = true
+                        }, 5000)
+                    }
+                    if (totalTimes === 30) {
+                        setIsLeft(true)
+                        ISL = true
+                        songLeftEye.play().then()
+                        setBanner('COVER YOUR LEFT  EYE')
+                        run_exam = false
+                        setTimeout(() => {
+                            setBanner('')
+                        }, 5000)
 
-                }
-                if (totalTimes === 20) {
-                    setIsLeft(true)
-                    ISL = true
-                    songLeftEye.play().then()
-                    setBaner('COVER YOUR LEFT  EYE')
-                    run_exam = false
-                    setTimeout(()=>{
-                        setBaner('')
-                        run_exam = true
-                    },5000)
-
-                }
-                if (totalTimes === 25) {
-                    setIsLeft(false)
-                    ISL = false
-                    songRightEye.play().then()
-                    setBaner('COVER YOUR RIGHT EYE')
-                    run_exam = false
-                    setTimeout(()=>{
-                        setBaner('')
-                        run_exam = true
-                    },5000)
-                }
-                if (totalTimes === 30) {
-                    setIsLeft(true)
-                    ISL = true
-                    songLeftEye.play().then()
-                    setBaner('COVER YOUR LEFT  EYE')
-                    run_exam = false
-                    setTimeout(()=>{
-                        setBaner('')
-                    },5000)
-
+                    }
                 }
             }
-        }}, 3000)
+        }, 3000)
     }
 
 
@@ -692,7 +623,8 @@ function App() {
         if (route === 0) {
 
 
-            LoadModel().then(r => {})
+            LoadModel().then(r => {
+            })
             exam()
         }
     }, [None_Change])
@@ -724,23 +656,21 @@ function App() {
             {Step === 1 && <Page1 step={Step} setStep={setStep}/>}
             {Step === 2 && <Page2 step={Step} setStep={setStep} setAge={setAge} age={age}/>}
             {Step === 3 && <Page3 step={Step} setStep={setStep}/>}
-            {Step === 4 && <Page4 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness} />}
-            {Step === 5 && <Page5 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness} />}
+            {Step === 4 && <Page4 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness}/>}
+            {Step === 5 && <Page5 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness}/>}
 
-            {(loading === true && Step > 5) &&
-                <div className='loading'>
-                    <p>
-                        PLEASE WAITING
-                    </p>
-                    <p>
-                        DOWNLOAD DATA OF TEST
-                    </p>
-                    <div className='progress-bar'>
-                        <div className='progress-bar-inner' style={{width: `${percentage}%`}}></div>
-                    </div>
-                    <h3>{percentage} %</h3>
+            {(loading === true && Step > 5) && <div className='loading'>
+                <p>
+                    PLEASE WAITING
+                </p>
+                <p>
+                    DOWNLOAD DATA OF TEST
+                </p>
+                <div className='progress-bar'>
+                    <div className='progress-bar-inner' style={{width: `${percentage}%`}}></div>
                 </div>
-            }
+                <h3>{percentage} %</h3>
+            </div>}
 
 
             {(test_end !== true && Step > 5 && loading === false) && <div className='Page'>
@@ -759,11 +689,9 @@ function App() {
                 {v === true && <div style={{
 
 
-                    display:'flex',
-                    justifyContent:'center',
-                    alignItems:'center'
+                    display: 'flex', justifyContent: 'center', alignItems: 'center'
                 }}>
-                    <h1>{baner}</h1>
+                    <h1>{banner}</h1>
                 </div>}
                 {v !== true && <div style={{alignContent: 'center'}}>
                     <>

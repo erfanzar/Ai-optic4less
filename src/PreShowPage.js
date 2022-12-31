@@ -9,13 +9,13 @@ export const Page = (props) => {
 
 
 export const Page0 = (props) => {
-    const [isEnded,setIsEnded] = useState(true)
+    const [isEnded, setIsEnded] = useState(true)
 
     useEffect(() => {
-        var audio = new Audio('/assets/voice/welcome_uk_female.mp3');
+        var audio = new Audio('/assets/voice/welcome.mp3');
         console.log('played on 1')
         audio.play();
-        audio.addEventListener('ended' , ()=>{
+        audio.addEventListener('ended', () => {
             setIsEnded(true)
         })
     }, [])
@@ -51,7 +51,7 @@ export const Page0 = (props) => {
                 height: '60px'
             }}></div>
             <div onClick={() => {
-                if (isEnded === true){
+                if (isEnded === true) {
                     props.setStep(props.step + 1)
                 }
             }} style={isEnded === true ? {
@@ -63,7 +63,7 @@ export const Page0 = (props) => {
                 justifyContent: 'center',
                 backgroundColor: 'black',
                 cursor: 'pointer'
-            }: {
+            } : {
                 alignSelf: 'center',
                 alignItems: 'center',
                 height: '80px',
@@ -87,13 +87,13 @@ export const Page0 = (props) => {
 
 
 export const Page1 = (props) => {
-    const [isEnded,setIsEnded] = useState(false)
+    const [isEnded, setIsEnded] = useState(false)
 
     useEffect(() => {
-        var audio = new Audio('/assets/voice/male_or_female_uk_female.mp3');
+        var audio = new Audio('/assets/voice/male-or-female.mp3');
         console.log('played on 1')
         audio.play();
-        audio.addEventListener('ended' , ()=>{
+        audio.addEventListener('ended', () => {
             setIsEnded(true)
         })
     }, [])
@@ -129,7 +129,7 @@ export const Page1 = (props) => {
                 // backgroundColor: 'black'
             }}>
                 <div onClick={() => {
-                    if (isEnded === true){
+                    if (isEnded === true) {
                         props.setStep(props.step + 1)
                     }
                 }} style={isEnded === true ? {
@@ -141,7 +141,7 @@ export const Page1 = (props) => {
                     justifyContent: 'center',
                     backgroundColor: 'black',
                     cursor: 'pointer'
-                }: {
+                } : {
                     alignSelf: 'center',
                     alignItems: 'center',
                     height: '80px',
@@ -171,7 +171,7 @@ export const Page1 = (props) => {
                     justifyContent: 'center',
                     backgroundColor: 'black',
                     cursor: 'pointer'
-                }: {
+                } : {
                     alignSelf: 'center',
                     alignItems: 'center',
                     height: '80px',
@@ -198,13 +198,13 @@ export const Page1 = (props) => {
 
 
 export const Page2 = (props) => {
-    const [isEnded,setIsEnded] = useState(false)
+    const [isEnded, setIsEnded] = useState(false)
 
     useEffect(() => {
-        var audio = new Audio('/assets/voice/select_your_age_uk_female.mp3');
+        var audio = new Audio('/assets/voice/select-age.mp3');
         console.log('played on 2')
         audio.play();
-        audio.addEventListener('ended' , ()=>{
+        audio.addEventListener('ended', () => {
             setIsEnded(true)
         })
     }, [])
@@ -237,16 +237,18 @@ export const Page2 = (props) => {
                     <input type="range" min="1" max="100" value={props.age} className="slider" id="myRange"
                            onChange={(e) => {
                                props.setAge(e.target.value)
-                           }} />
+                           }}/>
                     <div className="slider-num">
                         {new Array(100).fill('').map((item, index) =>
-                            <div className={`slider-num-item ${index === 99 && 'slider-num-item-end'} ${index === 0 && 'slider-num-item-start'} `}>
-                                <span className={`slider-num-item-line ${[0, 25, 50, 75].indexOf(index) !== -1 && 'slider-num-item-line-active'}`} />
+                            <div
+                                className={`slider-num-item ${index === 99 && 'slider-num-item-end'} ${index === 0 && 'slider-num-item-start'} `}>
+                                <span
+                                    className={`slider-num-item-line ${[0, 25, 50, 75].indexOf(index) !== -1 && 'slider-num-item-line-active'}`}/>
                                 {[0, 25, 50, 75].indexOf(index) !== -1 &&
                                     <span className='slider-num-item-text'>{index}</span>
                                 }
                                 {index === 99 &&
-                                    <span className='slider-num-item-text' >100</span>
+                                    <span className='slider-num-item-text'>100</span>
                                 }
 
                             </div>
@@ -268,7 +270,7 @@ export const Page2 = (props) => {
                 height: '30px'
             }}></div>
             <div onClick={() => {
-                if (isEnded === true){
+                if (isEnded === true) {
                     props.setStep(props.step + 1)
                 }
 
@@ -281,7 +283,7 @@ export const Page2 = (props) => {
                 justifyContent: 'center',
                 backgroundColor: 'black',
                 cursor: 'pointer'
-            }: {
+            } : {
                 alignSelf: 'center',
                 alignItems: 'center',
                 height: '80px',
@@ -305,98 +307,13 @@ export const Page2 = (props) => {
 
 
 export const Page3 = (props) => {
-    const [isEnded,setIsEnded] = useState(false)
+    const [isEnded, setIsEnded] = useState(false)
 
     useEffect(() => {
-        var audio = new Audio('/assets/voice/model_loaded_uk_female.mp3');
-        console.log('played on 3')
-        audio.play();
-        audio.addEventListener('ended' , ()=>{
-            setIsEnded(true)
-        })
-    }, [])
-
-
-    return (
-        <div style={{
-            width: '100%',
-            height: '100vh',
-            backgroundColor: 'white',
-            alignSelf: 'center',
-            alignItems: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center'
-        }}>
-            <p style={{
-                fontSize: '20px'
-            }}>
-                MODEL LOADED AND WE CALCULATED
-            </p>
-
-            <p style={{
-                fontSize: '20px'
-            }}>
-                THINGS THAT WE WANTED NOW YOU HAVE TO GET AWAY
-            </p>
-            <p style={{
-                fontSize: '20px'
-            }}>
-                FROM THE CAMERA AND DISPLAY FOR 1.5 M
-            </p>
-            <p style={{
-                fontSize: '20px'
-            }}>
-                (DON'T WORRY OUR AI WILL CALCULATE YOUR DISTANCE)
-            </p>
-            <div style={{
-                height: '60px'
-            }}></div>
-            <div onClick={() => {
-                if (isEnded === true){
-                    props.setStep(props.step + 1)
-                }
-            }} style={isEnded === true ? {
-                alignSelf: 'center',
-                alignItems: 'center',
-                height: '80px',
-                width: '200px',
-                display: 'flex',
-                justifyContent: 'center',
-                backgroundColor: 'black',
-                cursor: 'pointer'
-            }: {
-                alignSelf: 'center',
-                alignItems: 'center',
-                height: '80px',
-                width: '200px',
-                display: 'flex',
-                justifyContent: 'center',
-                backgroundColor: 'gray',
-                cursor: 'pointer'
-            }
-            }>
-                <p style={{
-                    alignItems: 'center',
-                    color: 'white'
-                }}>
-                    NEXT !
-                </p>
-            </div>
-        </div>
-    )
-}
-
-
-
-export const Page4 = (props) => {
-    const [isEnded,setIsEnded] = useState(false)
-
-    useEffect(() => {
-        var audio = new Audio('/assets/voice/left-larry-low-latency.mp3');
+        var audio = new Audio('/assets/voice/left-eye-weakness.mp3');
         console.log('played on 4')
         audio.play();
-        audio.addEventListener('ended' , ()=>{
+        audio.addEventListener('ended', () => {
             setIsEnded(true)
         })
     }, [])
@@ -428,11 +345,13 @@ export const Page4 = (props) => {
                     <input type="range" min="0" max="10" value={props.age} className="slider-zaf" step={0.25}
                            onChange={(e) => {
                                props.setWeakness(e.target.value)
-                           }} />
+                           }}/>
                     <div className="slider-zaf-num">
                         {[0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 7.75, 8, 8.25, 8.5, 8.75, 9, 9.25, 9.5, 9.75, 10].map((item, index) =>
-                            <div className={`slider-zaf-num-item ${item === 10 && 'slider-zaf-num-item-end'} ${item === 0 && 'slider-zaf-num-item-start'} `}>
-                                <span className={`slider-zaf-num-item-line ${[0, 5, 10].indexOf(item) !== -1 && 'slider-zaf-num-item-line-active'}`} />
+                            <div
+                                className={`slider-zaf-num-item ${item === 10 && 'slider-zaf-num-item-end'} ${item === 0 && 'slider-zaf-num-item-start'} `}>
+                                <span
+                                    className={`slider-zaf-num-item-line ${[0, 5, 10].indexOf(item) !== -1 && 'slider-zaf-num-item-line-active'}`}/>
                                 {[0, 5, 10].indexOf(item) !== -1 ?
                                     <span className='slider-zaf-num-item-text'>{item}</span>
                                     :
@@ -457,7 +376,7 @@ export const Page4 = (props) => {
                 height: '30px'
             }}></div>
             <div onClick={() => {
-                if (isEnded === true){
+                if (isEnded === true) {
                     props.setStep(props.step + 1)
                 }
             }} style={isEnded === true ? {
@@ -469,7 +388,7 @@ export const Page4 = (props) => {
                 justifyContent: 'center',
                 backgroundColor: 'black',
                 cursor: 'pointer'
-            }: {
+            } : {
                 alignSelf: 'center',
                 alignItems: 'center',
                 height: '80px',
@@ -492,15 +411,14 @@ export const Page4 = (props) => {
 }
 
 
-
-export const Page5 = (props) => {
-    const [isEnded,setIsEnded] = useState(false)
+export const Page4 = (props) => {
+    const [isEnded, setIsEnded] = useState(false)
 
     useEffect(() => {
-        var audio = new Audio('/assets/voice/right-larry-low-latency.mp3');
+        var audio = new Audio('/assets/voice/right-eye-weakness.mp3');
         console.log('played on 5')
         audio.play();
-        audio.addEventListener('ended' , ()=>{
+        audio.addEventListener('ended', () => {
             setIsEnded(true)
         })
     }, [])
@@ -533,11 +451,13 @@ export const Page5 = (props) => {
                     <input type="range" min="0" max="10" value={props.age} className="slider-zaf" step={0.25}
                            onChange={(e) => {
                                props.setWeakness(e.target.value)
-                           }} />
+                           }}/>
                     <div className="slider-zaf-num">
                         {[0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7, 7.25, 7.5, 7.75, 8, 8.25, 8.5, 8.75, 9, 9.25, 9.5, 9.75, 10].map((item, index) =>
-                            <div className={`slider-zaf-num-item ${item === 10 && 'slider-zaf-num-item-end'} ${item === 0 && 'slider-zaf-num-item-start'} `}>
-                                <span className={`slider-zaf-num-item-line ${[0, 5, 10].indexOf(item) !== -1 && 'slider-zaf-num-item-line-active'}`} />
+                            <div
+                                className={`slider-zaf-num-item ${item === 10 && 'slider-zaf-num-item-end'} ${item === 0 && 'slider-zaf-num-item-start'} `}>
+                                <span
+                                    className={`slider-zaf-num-item-line ${[0, 5, 10].indexOf(item) !== -1 && 'slider-zaf-num-item-line-active'}`}/>
                                 {[0, 5, 10].indexOf(item) !== -1 ?
                                     <span className='slider-zaf-num-item-text'>{item}</span>
                                     :
@@ -562,7 +482,7 @@ export const Page5 = (props) => {
                 height: '30px'
             }}></div>
             <div onClick={() => {
-                if (isEnded === true){
+                if (isEnded === true) {
                     props.setStep(props.step + 1)
                 }
             }} style={isEnded === true ? {
@@ -574,7 +494,7 @@ export const Page5 = (props) => {
                 justifyContent: 'center',
                 backgroundColor: 'black',
                 cursor: 'pointer'
-            }: {
+            } : {
                 alignSelf: 'center',
                 alignItems: 'center',
                 height: '80px',
@@ -595,3 +515,88 @@ export const Page5 = (props) => {
         </div>
     )
 }
+
+
+export const Page5 = (props) => {
+    const [isEnded, setIsEnded] = useState(false)
+
+    useEffect(() => {
+        var audio = new Audio('/assets/voice/model-loaded.mp3');
+        console.log('played on 3')
+        audio.play();
+        audio.addEventListener('ended', () => {
+            setIsEnded(true)
+        })
+    }, [])
+
+
+    return (
+        <div style={{
+            width: '100%',
+            height: '100vh',
+            backgroundColor: 'white',
+            alignSelf: 'center',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center'
+        }}>
+            <p style={{
+                fontSize: '20px'
+            }}>
+                THE MODEL LOADED AND WE CALCULATED
+            </p>
+
+            <p style={{
+                fontSize: '20px'
+            }}>
+                THE THINGS THAT WE WANTED NOW YOU HAVE TO GET AWAY
+            </p>
+            <p style={{
+                fontSize: '20px'
+            }}>
+                FROM THE CAMERA AND DISPLAY FOR 1.5 Meter
+            </p>
+            <p style={{
+                fontSize: '20px'
+            }}>
+                (DON'T WORRY OUR AI WILL CALCULATE YOUR DISTANCE)
+            </p>
+            <div style={{
+                height: '60px'
+            }}></div>
+            <div onClick={() => {
+                if (isEnded === true) {
+                    props.setStep(props.step + 1)
+                }
+            }} style={isEnded === true ? {
+                alignSelf: 'center',
+                alignItems: 'center',
+                height: '80px',
+                width: '200px',
+                display: 'flex',
+                justifyContent: 'center',
+                backgroundColor: 'black',
+                cursor: 'pointer'
+            } : {
+                alignSelf: 'center',
+                alignItems: 'center',
+                height: '80px',
+                width: '200px',
+                display: 'flex',
+                justifyContent: 'center',
+                backgroundColor: 'gray',
+                cursor: 'pointer'
+            }
+            }>
+                <p style={{
+                    alignItems: 'center',
+                    color: 'white'
+                }}>
+                    NEXT !
+                </p>
+            </div>
+        </div>
+    )
+}
+
