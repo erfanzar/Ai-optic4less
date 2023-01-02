@@ -332,6 +332,7 @@ function App() {
     let output;
     let None_Change = 0;
     let route = 0;
+    const run_time_sleep = 6000;
 
     // let total = [0, 0, 0];
     let totalTimes = 0;
@@ -429,12 +430,12 @@ function App() {
         if (route === 0) {
             route = 1
 
-            const Model_Face = await model_face.load();
-            // const Model_Face = null
+            // const Model_Face = await model_face.load();
+            const Model_Face = null
             console.log('Face Model Loaded')
 
-            const Model = await tf.loadGraphModel(URL);
-            // const Model = null
+            // const Model = await tf.loadGraphModel(URL);
+            const Model = null
             console.log("Model Loaded");
 
             set_loading(false)
@@ -469,7 +470,7 @@ function App() {
             if (run_exam === true) {
                 if (time === 0) {
                     setTimeout(() => {
-                    }, 4000)
+                    }, 6000)
                 }
                 if (gg !== null && v !== null && end !== true) {
 
@@ -542,7 +543,7 @@ function App() {
                         setTimeout(() => {
                             setBanner('')
                             run_exam = true
-                        }, 5000)
+                        }, run_time_sleep)
                     }
 
                     if (totalTimes === 5) {
@@ -554,7 +555,7 @@ function App() {
                         setTimeout(() => {
                             setBanner('')
                             run_exam = true
-                        }, 5000)
+                        }, run_time_sleep)
                     }
                     if (totalTimes === 10) {
                         setIsLeft(true)
@@ -565,7 +566,7 @@ function App() {
                         setTimeout(() => {
                             setBanner('')
                             run_exam = true
-                        }, 5000)
+                        }, run_time_sleep)
                     }
                     if (totalTimes === 15) {
                         setIsLeft(false)
@@ -576,7 +577,7 @@ function App() {
                         setTimeout(() => {
                             setBanner('')
                             run_exam = true
-                        }, 5000)
+                        }, run_time_sleep)
 
                     }
                     if (totalTimes === 20) {
@@ -588,7 +589,7 @@ function App() {
                         setTimeout(() => {
                             setBanner('')
                             run_exam = true
-                        }, 5000)
+                        }, run_time_sleep)
 
                     }
                     if (totalTimes === 25) {
@@ -600,7 +601,7 @@ function App() {
                         setTimeout(() => {
                             setBanner('')
                             run_exam = true
-                        }, 5000)
+                        }, run_time_sleep)
                     }
                     if (totalTimes === 30) {
                         setIsLeft(true)
@@ -610,12 +611,12 @@ function App() {
                         run_exam = false
                         setTimeout(() => {
                             setBanner('')
-                        }, 5000)
+                        }, run_time_sleep)
 
                     }
                 }
             }
-        }, 3000)
+        }, 4000)
     }
 
 
