@@ -1,6 +1,7 @@
 import './App.css';
 import {useEffect, useState} from "react";
 
+const var_end = true;
 
 export const Page = (props) => {
     props.setStep(1);
@@ -9,11 +10,11 @@ export const Page = (props) => {
 
 
 export const Page0 = (props) => {
-    const [isEnded, setIsEnded] = useState(true)
+    const [isEnded, setIsEnded] = useState(var_end)
 
     useEffect(() => {
         var audio = new Audio('/assets/voice/welcome.mp3');
-        console.log('played on 1')
+        // console.log('played on 1')
         audio.play();
         audio.addEventListener('ended', () => {
             setIsEnded(true)
@@ -87,11 +88,11 @@ export const Page0 = (props) => {
 
 
 export const Page1 = (props) => {
-    const [isEnded, setIsEnded] = useState(false)
+    const [isEnded, setIsEnded] = useState(var_end)
 
     useEffect(() => {
         var audio = new Audio('/assets/voice/male-or-female.mp3');
-        console.log('played on 1')
+        // console.log('played on 1')
         audio.play();
         audio.addEventListener('ended', () => {
             setIsEnded(true)
@@ -198,11 +199,11 @@ export const Page1 = (props) => {
 
 
 export const Page2 = (props) => {
-    const [isEnded, setIsEnded] = useState(false)
+    const [isEnded, setIsEnded] = useState(var_end)
 
     useEffect(() => {
         var audio = new Audio('/assets/voice/select-age.mp3');
-        console.log('played on 2')
+        // console.log('played on 2')
         audio.play();
         audio.addEventListener('ended', () => {
             setIsEnded(true)
@@ -307,11 +308,11 @@ export const Page2 = (props) => {
 
 
 export const Page3 = (props) => {
-    const [isEnded, setIsEnded] = useState(false)
+    const [isEnded, setIsEnded] = useState(var_end)
 
     useEffect(() => {
         var audio = new Audio('/assets/voice/left-eye-weakness.mp3');
-        console.log('played on 4')
+        // console.log('played on 4')
         audio.play();
         audio.addEventListener('ended', () => {
             setIsEnded(true)
@@ -412,11 +413,11 @@ export const Page3 = (props) => {
 
 
 export const Page4 = (props) => {
-    const [isEnded, setIsEnded] = useState(false)
+    const [isEnded, setIsEnded] = useState(var_end)
 
     useEffect(() => {
         var audio = new Audio('/assets/voice/right-eye-weakness.mp3');
-        console.log('played on 5')
+        // console.log('played on 5')
         audio.play();
         audio.addEventListener('ended', () => {
             setIsEnded(true)
@@ -518,11 +519,11 @@ export const Page4 = (props) => {
 
 
 export const Page5 = (props) => {
-    const [isEnded, setIsEnded] = useState(false)
+    const [isEnded, setIsEnded] = useState(var_end)
 
     useEffect(() => {
         var audio = new Audio('/assets/voice/model-loaded.mp3');
-        console.log('played on 3')
+        // console.log('played on 3')
         audio.play();
         audio.addEventListener('ended', () => {
             setIsEnded(true)
@@ -567,7 +568,9 @@ export const Page5 = (props) => {
             }}></div>
             <div onClick={() => {
                 if (isEnded === true) {
+                    console.log('CPA : ', props.step + 1)
                     props.setStep(props.step + 1)
+
                 }
             }} style={isEnded === true ? {
                 alignSelf: 'center',

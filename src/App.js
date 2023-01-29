@@ -4,26 +4,35 @@ import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
 import {isMobile} from 'react-device-detect';
 import {fl, df, getOperatingSystem, images} from './utils'
+import {RunEyeTwo} from './Stage-2'
 import {Intrep} from './funcs';
 import {selectGender, selectAge, coverRightEye, coverLeftEye, findingFace, welcomeVoice, modelLoaded} from './voice'
 import {Page0, Page1, Page2, Page3, Page4, Page5} from "./PreShowPage";
 import * as model_face from '@tensorflow-models/blazeface'
+import {step} from "@tensorflow/tfjs";
 
 
 let v = null;
 let URL = null;
 let os = getOperatingSystem(window);
 let prsc_l = 1
+let failed_index = 0;
 let known_distance = null
 let known_width = null
 let ref_image_face_width = null
 let run_exam = true;
-
+let brake_time_lapse_in_exam_function_time = 1000
+const version_model = 0.8
+let first_change = true
+const spa = () => {
+    first_change = false
+}
 if (isMobile) {
     known_distance = 44.5
     known_width = 18
     ref_image_face_width = 217
-    URL = 'https://ai.optics4less.com/Model/Old/model.json'
+    URL = 'https://ai.optics4less.com/Model/v5m/model.json'
+    // URL = 'https://ai.optics4less.com/Model/Old/model.json'
 } else {
     known_distance = 44.5
     known_width = 18
@@ -31,8 +40,10 @@ if (isMobile) {
     if (os === 'macOS') {
         URL = 'https://ai.optics4less.com/Model/v5m/model.json'
     } else {
+        // URL = 'https://ai.optics4less.com/Model/v5m/model.json'
+        // URL = 'https://ai.optics4less.com/Model/Old/model.json'
+        URL = 'https://ai.optics4less.com/Model/v8/model.json'
 
-        URL = 'https://ai.optics4less.com/Model/Old/model.json'
     }
 
 }
@@ -55,7 +66,8 @@ const ImageShow = (onShow, index, px) => {
                 color: 'black',
                 borderRadius: '0px',
                 margin: '20px',
-                display: 'flex'
+                display: 'flex',
+
             }}
         ><img className='Side'
               src={`/assets/images/${images[index]}`}
@@ -89,6 +101,7 @@ const TestShow = (ac, af, px, total) => {
     let font = 20
     if (v === true) {
         if (total <= 0) {
+            failed_index = 1
             return (<div style={{
                 display: 'flex', flexDirection: 'row'
             }}>
@@ -106,6 +119,7 @@ const TestShow = (ac, af, px, total) => {
         }
         if (total >= 1 && total < 3) {
             px /= 2
+            failed_index = 2
             return (<div style={{
                 display: 'flex', flexDirection: 'row'
             }}>
@@ -125,6 +139,7 @@ const TestShow = (ac, af, px, total) => {
             </div>)
         }
         if (total >= 3 && total < 6) {
+            failed_index = 3
             px /= 3
             return (<div style={{
                 display: 'flex', flexDirection: 'column'
@@ -149,6 +164,7 @@ const TestShow = (ac, af, px, total) => {
             </div>)
         }
         if (total >= 6 && total < 10) {
+            failed_index = 4
             px /= 4
             return (<div style={{
                 display: 'flex', flexDirection: 'column'
@@ -175,6 +191,7 @@ const TestShow = (ac, af, px, total) => {
         }
         if (total >= 10 && total < 15) {
             px /= 5
+            failed_index = 5
             return (<div style={{
                 display: 'flex',
             }}>
@@ -205,6 +222,7 @@ const TestShow = (ac, af, px, total) => {
         }
         if (total >= 14 && total < 21) {
             px /= 6
+            failed_index = 6
             return (<div style={{
                 display: 'flex', flexDirection: 'column'
             }}>
@@ -235,6 +253,7 @@ const TestShow = (ac, af, px, total) => {
             </div>)
         }
         if (total >= 21 && total < 28) {
+            failed_index = 7
             px /= 7
             return (<div style={{
                 display: 'flex', flexDirection: 'column'
@@ -267,6 +286,7 @@ const TestShow = (ac, af, px, total) => {
         }
         if (total >= 28 && total < 36) {
             px /= 8
+            failed_index = 8
             return (<div style={{
                 display: 'flex', flexDirection: 'column'
             }}>
@@ -295,6 +315,38 @@ const TestShow = (ac, af, px, total) => {
                 </div>
             </div>)
         }
+        if (total >= 36 && total < 44) {
+            px /= 9
+            failed_index = 9
+            return (<div style={{
+                display: 'flex', flexDirection: 'column'
+            }}>
+                <div>
+                    {ImageShow(total === 36, 28, px)}
+                    {ImageShow(total === 37, 29, px)}
+                    {ImageShow(total === 38, 30, px)}
+                </div>
+                <div>
+                    {ImageShow(total === 39, 31, px)}
+                    {ImageShow(total === 40, 32, px)}
+                    {ImageShow(total === 41, 33, px)}
+                </div>
+                <div>
+                    {ImageShow(total === 42, 34, px)}
+                    {ImageShow(total === 43, 35, px)}
+                    {ImageShow(total === 44, 35, px)}
+                    <div style={{
+                        display: 'flex'
+                    }}>
+                        <p style={{
+                            color: 'black', margin: '20px', fontSize: `${font}px`
+                        }}>
+                            20/0
+                        </p>
+                    </div>
+                </div>
+            </div>)
+        }
     }
 }
 
@@ -312,7 +364,7 @@ function App() {
     const [totalTimesPassed, setTotalTimesPassed] = useState(0)
     const [TRue, set_TRue] = useState(0)
     const [FAlse, set_FAlse] = useState(0)
-    const [distance, set_Distance] = useState(null)
+    const [distance, set_Distance] = useState(50)
     // const [va, setVa] = useState(null)
     const [px, set_px] = useState(null)
     const [Step, setStep] = useState(0)
@@ -343,7 +395,7 @@ function App() {
     let ww = window.innerWidth;
     let [isLeft, setIsLeft] = useState(true);
     let time = 0;
-    let allowed_false = 99;
+    let allowed_false = 2;
     let p_false = 2
     focal_distance = fl(known_distance, known_width, ref_image_face_width);
     const Detection = async (Model_Face, Model) => {
@@ -359,44 +411,73 @@ function App() {
                     .div(255.0)
                     .expandDims(0)
                     .reshape([1, 640, 640, 3]);
-                const pred = await Model.executeAsync(x)
 
-                const [boxes, scores, classes, valid] = pred
+                // console.log('Trying for pred')
+                // console.log(pred)
+                if (version_model < 0.6) {
+                    let pred = await Model.executeAsync(x)
+                    const [boxes, scores, classes, valid] = pred
 
-                const boxes_data = boxes.dataSync();
-                const scores_data = scores.dataSync();
-                const classes_data = classes.dataSync();
-                const valid_data = valid.dataSync()[0];
-                let i;
-                for (i = 0; i < valid_data; i++) {
+                    const boxes_data = boxes.dataSync();
+                    const scores_data = scores.dataSync();
+                    const classes_data = classes.dataSync();
+                    const valid_data = valid.dataSync()[0];
+                    let i;
+                    for (i = 0; i < valid_data; i++) {
 
 
-                    if (scores_data[i].toFixed(2) > 0.6) {
-                        output = await classes.dataSync()[0, i]
+                        if (scores_data[i].toFixed(2) > 0.6) {
+                            output = await classes.dataSync()[0, i]
+                            if (ISL === false) {
+                                if (output === 1) {
+                                    output = 2;
+
+                                } else {
+                                    if (output === 2) {
+                                        output = 1;
+
+                                    }
+                                }
+                            }
+                            // console.log(classes_name[output])
+                        }
+                    }
+                    tf.dispose(pred)
+                    tf.dispose(boxes_data)
+                    tf.dispose(scores_data)
+                    tf.dispose(classes_data)
+                    tf.dispose(valid_data)
+                    tf.dispose(boxes)
+                    tf.dispose(scores)
+                    tf.dispose(classes)
+                    tf.dispose(x)
+                    tf.dispose(valid)
+                } else {
+                    let pred = await Model.execute(x)
+                    pred = tf.transpose(pred, [0, 2, 1])
+                    // pred.shape.print()
+                    // console.log(pred.shape)
+                    let scores = tf.max(pred.slice([0, 0, 4]), 1)
+                    let prediction = tf.argMax(scores, 1)
+
+                    if (scores.dataSync()[prediction.dataSync()[0]] > 0.4) {
+                        output = prediction.dataSync()[0]
                         if (ISL === false) {
                             if (output === 1) {
                                 output = 2;
-                                console.log('changing : ', classes_name[output])
+
                             } else {
                                 if (output === 2) {
                                     output = 1;
-                                    console.log('changing : ', classes_name[output])
+
                                 }
                             }
                         }
-                        console.log(classes_name[output])
                     }
+
                 }
-                tf.dispose(pred)
-                tf.dispose(boxes_data)
-                tf.dispose(scores_data)
-                tf.dispose(classes_data)
-                tf.dispose(valid_data)
-                tf.dispose(boxes)
-                tf.dispose(scores)
-                tf.dispose(classes)
-                tf.dispose(x)
-                tf.dispose(valid)
+
+
             }
             if (Model_Face != null) {
                 const predict_face = await Model_Face.estimateFaces(video, false)
@@ -434,8 +515,8 @@ function App() {
             const Model_Face = null
             console.log('Face Model Loaded')
 
-            // const Model = await tf.loadGraphModel(URL);
-            const Model = null
+            const Model = await tf.loadGraphModel(URL);
+            // const Model = null
             console.log("Model Loaded");
 
             set_loading(false)
@@ -453,17 +534,17 @@ function App() {
         let False = 0;
         let start = Date.now();
 
-
+        // console.log('running this trash bitch ')
         let side;
 
         let img = images[time]
-        if (img === 'BottomSide.jpg') {
+        if (img === 'BottomSide.png') {
             side = 0;
-        } else if (img === 'LeftSide.jpg') {
+        } else if (img === 'LeftSide.png') {
             side = 1;
-        } else if (img === 'RightSide.jpg') {
+        } else if (img === 'RightSide.png') {
             side = 2;
-        } else if (img === 'TopSide.jpg') {
+        } else if (img === 'TopSide.png') {
             side = 3;
         }
         setInterval(() => {
@@ -476,7 +557,7 @@ function App() {
 
                     let current = Date.now()
                     setInterval(() => {
-                        console.log(side, output)
+                        // console.log(side, output)
                         current = Date.now()
                         if (side === output) {
                             start = Date.now();
@@ -488,16 +569,16 @@ function App() {
                                 p_false -= 1
                             }
                             img = images[time]
-                            if (img === 'BottomSide.jpg') {
+                            if (img === 'BottomSide.png') {
                                 side = 0;
                             }
-                            if (img === 'LeftSide.jpg') {
+                            if (img === 'LeftSide.png') {
                                 side = 1;
                             }
-                            if (img === 'RightSide.jpg') {
+                            if (img === 'RightSide.png') {
                                 side = 2;
                             }
-                            if (img === 'TopSide.jpg') {
+                            if (img === 'TopSide.png') {
                                 side = 3;
                             }
                             setTotalTimesPassed(time)
@@ -508,23 +589,23 @@ function App() {
                                 time += 1
                                 current = Date.now()
                                 img = images[time]
-                                if (img === 'BottomSide.jpg') {
+                                if (img === 'BottomSide.png') {
                                     side = 0;
                                 }
-                                if (img === 'LeftSide.jpg') {
+                                if (img === 'LeftSide.png') {
                                     side = 1;
                                 }
-                                if (img === 'RightSide.jpg') {
+                                if (img === 'RightSide.png') {
                                     side = 2;
                                 }
-                                if (img === 'TopSide.jpg') {
+                                if (img === 'TopSide.png') {
                                     side = 3;
                                 }
                                 output = null
                                 setTotalTimesPassed(time)
                             }
                         }
-                    }, 500)
+                    }, brake_time_lapse_in_exam_function_time)
 
 
                     // total = [True, False - 1]
@@ -532,8 +613,10 @@ function App() {
                     set_FAlse(False)
                     set_TRue(True)
                     if (False >= allowed_false) {
-                        set_test_end(true)
+                        set_test_end(false)
                         end = true
+                        setStep(7)
+                        console.log('Step Set to 7 going for ppav')
                     }
                     totalTimes = False + True
                     if (totalTimes === 0) {
@@ -622,8 +705,6 @@ function App() {
 
     useEffect(() => {
         if (route === 0) {
-
-
             LoadModel().then(r => {
             })
             exam()
@@ -632,7 +713,7 @@ function App() {
 
 
     const findingFaceVoice = () => {
-        console.log('ran')
+        // console.log('ran')
         let song = new Audio(findingFace)
         song.play().then()
     }
@@ -660,7 +741,7 @@ function App() {
             {Step === 4 && <Page4 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness}/>}
             {Step === 5 && <Page5 step={Step} setStep={setStep} setWeakness={setWeakness} weakness={weakness}/>}
 
-            {(loading === true && Step > 5) && <div className='loading'>
+            {(loading === true && Step === 6) && <div className='loading'>
                 <p>
                     PLEASE WAITING
                 </p>
@@ -674,7 +755,7 @@ function App() {
             </div>}
 
 
-            {(test_end !== true && Step > 5 && loading === false) && <div className='Page'>
+            {(test_end !== true && Step === 6 && loading === false) && <div className='Page'>
 
                 {v === true && <div className='result'>
 
@@ -713,7 +794,7 @@ function App() {
                     </>
                 </div>}
                 {v === true && <div className='ImageCorner'>
-                    {TestShow(TRue, FAlse, Intrep(px, [80, 350], [100, start_dis]), totalTimesPassed)}
+                    {TestShow(TRue, FAlse, Intrep(distance, [80, 350], [30, 175]), totalTimesPassed)}
                 </div>}
 
                 <Webcam
@@ -728,6 +809,20 @@ function App() {
                 />
 
             </div>}
+            {(test_end !== true && Step === 7 && loading === false) && <div>
+                {RunEyeTwo(model_face, ImageShow, 0.750, distance, totalTimesPassed, failed_index)}
+                <Webcam
+                    ref={webcamRef}
+                    height={hig}
+                    width={wid}
+                    mirrored={true}
+                    className='camera'
+                    style={{
+                        height: `${isMobile ? 0 : 200}px`, width: `${isMobile ? 0 : 300}px`,
+                    }}
+                />
+            </div>
+            }
             {test_end === true && <div style={{
                 height: '100vh',
                 width: '100%',
@@ -747,6 +842,70 @@ function App() {
 
     )
 
+// return (<div>
+//
+//
+//         {(loading === true) && <div className='loading'>
+//             <p>
+//                 PLEASE WAITING
+//             </p>
+//             <p>
+//                 DOWNLOAD DATA OF TEST
+//             </p>
+//             <div className='progress-bar'>
+//                 <div className='progress-bar-inner' style={{width: `${percentage}%`}}></div>
+//             </div>
+//             <h3>{percentage} %</h3>
+//         </div>}
+//
+//
+//         {(test_end !== true && loading === false) && <div className='Page'
+//                                                           style={{
+//                                                               fontSize: '0px'
+//                                                           }}>
+//             {run_exam = true}
+//             {v = true}
+//             {end = false}
+//             {brake_time_lapse_in_exam_function_time = 2000}
+//             {
+//                 // first_change === true ? (setTotalTimesPassed(0)) : (spa)
+//             }
+//             {RunEyeTwo(model_face, ImageShow, 0.750, distance, totalTimesPassed,failed_index)}
+//
+//             <Webcam
+//                 ref={webcamRef}
+//                 height={hig}
+//                 width={wid}
+//                 mirrored={true}
+//                 className='camera'
+//                 style={{
+//                     height: `${isMobile ? 0 : 200}px`, width: `${isMobile ? 0 : 300}px`,
+//                 }}
+//             />
+//
+//         </div>}
+//         {test_end === true && <div style={{
+//             height: '100vh',
+//             width: '100%',
+//             backgroundColor: 'black',
+//             justifyContent: 'center',
+//             display: 'flex',
+//             flexDirection: 'column',
+//             alignItems: 'center'
+//         }}>
+//             <p className='end_result'>Test Ended</p>
+//             <p className='end_result'>TRUE : {TRue}</p>
+//             <p className='end_result'>FALSE : {FAlse}</p>
+    {/*            <p className='end_result'>AGE : {age}</p>*/
+    }
+
+    {/*        </div>}*/
+    }
+    {/*    </div>*/
+    }
+
+    {/*)*/
+    }
 
 }
 
