@@ -10,7 +10,10 @@ import {selectGender, selectAge, coverRightEye, coverLeftEye, findingFace, welco
 import {Page0, Page1, Page2, Page3, Page4, Page5} from "./PreShowPage";
 import * as model_face from '@tensorflow-models/blazeface'
 import {step} from "@tensorflow/tfjs";
+import {load} from "@tensorflow-models/blazeface";
 
+let vpka = true
+let lostPoint = null
 
 let v = null;
 let URL = null;
@@ -20,7 +23,7 @@ let failed_index = 0;
 let known_distance = null
 let known_width = null
 let ref_image_face_width = null
-let run_exam = true;
+let run_exam = false;
 let brake_time_lapse_in_exam_function_time = 1000
 const version_model = 0.8
 let first_change = true
@@ -31,14 +34,14 @@ if (isMobile) {
     known_distance = 44.5
     known_width = 18
     ref_image_face_width = 217
-    URL = 'https://ai.optics4less.com/Model/v5m/model.json'
+    URL = 'https://ai.optics4less.com/Model/v8/model.json'
     // URL = 'https://ai.optics4less.com/Model/Old/model.json'
 } else {
     known_distance = 44.5
     known_width = 18
     ref_image_face_width = 300
     if (os === 'macOS') {
-        URL = 'https://ai.optics4less.com/Model/v5m/model.json'
+        URL = 'https://ai.optics4less.com/Model/v8/model.json'
     } else {
         // URL = 'https://ai.optics4less.com/Model/v5m/model.json'
         // URL = 'https://ai.optics4less.com/Model/Old/model.json'
@@ -395,7 +398,7 @@ function App() {
     let ww = window.innerWidth;
     let [isLeft, setIsLeft] = useState(true);
     let time = 0;
-    let allowed_false = 2;
+    let allowed_false = 4;
     let p_false = 2
     focal_distance = fl(known_distance, known_width, ref_image_face_width);
     const Detection = async (Model_Face, Model) => {
@@ -549,11 +552,13 @@ function App() {
         }
         setInterval(() => {
             if (run_exam === true) {
-                if (time === 0) {
+                if (time === 0 && vpka === true) {
+                    console.log('timeout started')
                     setTimeout(() => {
+                        vpka = false
                     }, 6000)
-                }
-                if (gg !== null && v !== null && end !== true) {
+
+                } else if (gg !== null && v !== null && end !== true) {
 
                     let current = Date.now()
                     setInterval(() => {
@@ -616,6 +621,7 @@ function App() {
                         set_test_end(false)
                         end = true
                         setStep(7)
+                        lostPoint = totalTimesPassed
                         console.log('Step Set to 7 going for ppav')
                     }
                     totalTimes = False + True
@@ -731,7 +737,16 @@ function App() {
         }
     }, [Step])
 
-
+    setInterval(() => {
+            if (Step === 6 && loading === false) {
+                run_exam = true
+            }
+            if ((totalTimesPassed) === (lostPoint + 5)) {
+                set_test_end(true);
+                end = true
+            }
+        }, 100
+    )
     return (<div>
 
             {Step === 0 && <Page0 step={Step} setStep={setStep}/>}
@@ -811,6 +826,7 @@ function App() {
             </div>}
             {(test_end !== true && Step === 7 && loading === false) && <div>
                 {RunEyeTwo(model_face, ImageShow, 0.750, distance, totalTimesPassed, failed_index)}
+
                 <Webcam
                     ref={webcamRef}
                     height={hig}
