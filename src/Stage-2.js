@@ -16,8 +16,6 @@ export const RunEyeTwo = (model, ims_func, predicts, distance, total_times, fail
                 display: 'flex'
             }}>
                 {ims_func(total_times % 2 === 0, total_times, distance / failed_index)}
-                passed shit = {total_times}
-                distance shit = {distance}
             </div>
             <div style={{
                 height: '100vh', width: '50%', backgroundColor: 'green', display: 'flex', justifyContent: 'center'

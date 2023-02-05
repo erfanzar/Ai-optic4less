@@ -398,7 +398,7 @@ function App() {
     let ww = window.innerWidth;
     let [isLeft, setIsLeft] = useState(true);
     let time = 0;
-    let allowed_false = 4;
+    let allowed_false = 2;
     let p_false = 2
     focal_distance = fl(known_distance, known_width, ref_image_face_width);
     const Detection = async (Model_Face, Model) => {
@@ -618,10 +618,18 @@ function App() {
                     set_FAlse(False)
                     set_TRue(True)
                     if (False >= allowed_false) {
-                        set_test_end(false)
+
                         end = true
-                        setStep(7)
+
                         lostPoint = totalTimesPassed
+                        setBanner('GOING FOR SECOND TEST IN 5 SECONDS  GET READY')
+                        setTimeout(
+                            () => {
+                                set_test_end(false)
+                                setBanner('')
+                                setStep(7)
+                            }, 6000
+                        )
                         console.log('Step Set to 7 going for ppav')
                     }
                     totalTimes = False + True
@@ -741,7 +749,7 @@ function App() {
             if (Step === 6 && loading === false) {
                 run_exam = true
             }
-            if ((totalTimesPassed) === (lostPoint + 5)) {
+            if ((totalTimesPassed) === (lostPoint + 8)) {
                 set_test_end(true);
                 end = true
             }
@@ -837,8 +845,7 @@ function App() {
                         height: `${isMobile ? 0 : 200}px`, width: `${isMobile ? 0 : 300}px`,
                     }}
                 />
-            </div>
-            }
+            </div>}
             {test_end === true && <div style={{
                 height: '100vh',
                 width: '100%',
